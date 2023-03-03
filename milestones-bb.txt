@@ -2,9 +2,6 @@ Challenge 04
 Name/GH Handle: Brandon Bull (bbull5)
 Assigned Task: Maze Generation
 Repo: Group Repo: https://github.com/Bhumir2503/Final-Project.git
-      Personal Fork: https://github.com/bbull5/Final-Project.git
-      (I provided the personal fork so that there is evidence of my work
-      in case my pull request on the main fork isn't approved by the due date)
 
 
 TIME LOG:
