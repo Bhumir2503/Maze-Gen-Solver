@@ -86,8 +86,8 @@ void Maze::draw_path_solver(){
 	for(size_t i = 0; i < WIDTH; i++){
 		for(size_t j = 0; j < HEIGHT; j++){
 			if(grid[i][j] == 2){
-				SDL_SetRenderDrawColor(renderer, 85, 246, 187, 255);		//Set draw color to purple
-				SDL_RenderDrawPoint(renderer, i, j);
+				SDL_SetRenderDrawColor(renderer, 85, 246, 187, 255);		//Set draw color to turquoise
+				SDL_RenderDrawPoint(renderer, i, j); 
 			}
 		}
 	}
