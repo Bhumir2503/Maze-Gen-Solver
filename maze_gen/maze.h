@@ -17,6 +17,7 @@ class Maze {
 		void draw_grid();		//Displays grid in SDL window
 		void print_graph();	//Displays contents of adjList
 		void rand_DFS();		//randomized DFS used to construct min span tree
+		void draw_path_solver();
 
 	private:
 		int grid[WIDTH][HEIGHT];		//Internal state of grid. Used to display to SDL window

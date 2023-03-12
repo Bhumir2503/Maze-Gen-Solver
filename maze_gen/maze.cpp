@@ -15,6 +15,7 @@ Maze::Maze() {
 	build_grid();
 	print_graph();
 	draw_grid();
+	draw_path_solver();
 	
 	//Hold screen until exit
 	while (quit == false) {
@@ -41,7 +42,10 @@ void Maze::build_grid() {
 			if (i % 10 == 0 || j % 10 == 0) {
 				grid[i][j] = 1;
 			}
-			else {
+			else if(i % 10 == 4 || i % 10 == 5 || i % 10 == 6 || j % 10 == 4 || j % 10 == 5 || j % 10 == 6){ 
+				grid[i][j] = 2; //have a 3 pixel path in each cell in the 4th pixel row
+			}
+			else{
 				grid[i][j] = 0;
 			}
 			
@@ -76,6 +80,18 @@ void Maze::draw_grid() {
 		}
 	}
 	SDL_RenderPresent(renderer);		//Show updated render
+}
+
+void Maze::draw_path_solver(){
+	for(size_t i = 0; i < WIDTH; i++){
+		for(size_t j = 0; j < HEIGHT; j++){
+			if(grid[i][j] == 2){
+				SDL_SetRenderDrawColor(renderer, 85, 246, 187, 255);		//Set draw color to purple
+				SDL_RenderDrawPoint(renderer, i, j);
+			}
+		}
+	}
+	SDL_RenderPresent(renderer);
 }
 
 
