@@ -1,5 +1,5 @@
 #OBJS specifies which files to compile
-OBJS = maze.cpp main.cpp
+OBJS = maze.cpp cell.cpp main.cpp
 
 #CC specifies which compiler to use
 CC = g++

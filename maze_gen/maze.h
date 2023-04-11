@@ -1,15 +1,16 @@
 #include <SDL2/SDL.h>
+#include "cell.h"
 #include <map>
 #include <vector>
 
-
+using namespace std;
 #ifndef MAZE_H
 #define MAZE_H
 
 //Global constants for setting render resolution
 //Use smaller dimensions for debugging
-const int WIDTH = 1920, HEIGHT = 1080;
-
+const int WIDTH = 1000, HEIGHT = 1000;
+const int cellWidth = 100;
 class Maze {
 	public:
 		Maze();							//Sets initial state of maze and SDL window
@@ -21,10 +22,11 @@ class Maze {
 
 	private:
 		int grid[WIDTH][HEIGHT];		//Internal state of grid. Used to display to SDL window
-		
+		vector<cell> cells;
 		//adjList represents the connected graph of each cell in the grid. This graph is used to 
 		//construct a MST that determines the layout of the final maze
 		std::map<std::pair<int, int>, std::vector<std::pair<int, int>>> adjList;
+		vector<pair<int, int>> centerList;
 
 		SDL_Window* window;
 		SDL_Renderer* renderer;
