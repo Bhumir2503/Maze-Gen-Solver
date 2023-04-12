@@ -19,15 +19,20 @@ class Maze {
 		void print_graph();	//Displays contents of adjList
 		void rand_DFS();		//randomized DFS used to construct min span tree
 		void draw_path_solver();
-
+		void buildCellVector();
+		void buildAdjCellVector();
+		void prims();
 	private:
 		int grid[WIDTH][HEIGHT];		//Internal state of grid. Used to display to SDL window
 		vector<cell> cells;
+		vector<pair<int, int>> cellPixels;
+		vector<pair<int, priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>>>> cellNeighbors;
 		//adjList represents the connected graph of each cell in the grid. This graph is used to 
 		//construct a MST that determines the layout of the final maze
 		std::map<std::pair<int, int>, std::vector<std::pair<int, int>>> adjList;
 		vector<pair<int, int>> centerList;
-
+		int cellCountX, CellCountY;
+		int cellCount;
 		SDL_Window* window;
 		SDL_Renderer* renderer;
 		SDL_Event event;			//Used to poll SDL window

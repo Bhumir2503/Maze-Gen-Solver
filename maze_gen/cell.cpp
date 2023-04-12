@@ -5,9 +5,11 @@ cell::cell(){
 
 }
 
-cell::cell(int x, int y){
+cell::cell(int x, int y, int i){
+	index = i;
 	center.first = x;
 	center.second = y;
+	weight = 20;
 }
 
 int cell::getWeight(){
@@ -25,11 +27,19 @@ void cell::setPixels(int centerX, int centerY, int cellPixelSize){
 		}
 	}
 }
-cell* cell::getNeighbor(){
-    cell* n = this->neighbors.top();
-    this->neighbors.pop();
-    return n;
+
+void cell::setNeigbor(int width, int height, cell neighborCell){
+	
 }
+
+cell cell::getNeighbor(){
+  //  cell n = neighbors.top().second;
+  //  neighbors.pop();
+  //  return n;
+}
+
+
+
 vector<pair<int, int>> cell::getPixels(){
     return this->pixels;
 }

@@ -2,8 +2,9 @@
 #include <iostream>
 #include <vector>
 #include <queue>
+#include <climits>
 using namespace std;
-
+typedef pair<int, int> WIpair;
 Maze::Maze()
 {
 	// Open SDL
@@ -125,12 +126,14 @@ void Maze::build_grid()
 	
 	for (int i = 0; i < centerList.size(); i++)
 	{
-			cells.emplace_back(centerList[i].first, centerList[i].second);
+	cells.emplace_back(centerList[i].first, centerList[i].second, i);
 	}
 	for(int i = 0; i < cells.size(); i++){
 		cells[i].setPixels(cells[i].center.first, cells[i].center.second, cellWidth);
 	}
-	vector<pair<int, int>> cellPixels;
+	cellCount = cells.size();
+	cellCountX = WIDTH / cellWidth;
+	CellCountY = HEIGHT / cellWidth;
 	for(int i = 0; i < cells.size(); i++){
 		cellPixels = cells[i].getPixels();
 		for(int j = 0; j < cellPixels.size(); j++){
@@ -143,6 +146,9 @@ void Maze::build_grid()
 			}
 		}
 	}
+
+	buildCellVector();
+	buildAdjCellVector();
 	
 }
 
@@ -215,6 +221,102 @@ void Maze::print_graph()
 		std::cout << std::endl;
 	}
 }
+
+void Maze::prims(){
+	priority_queue<WIpair, vector<WIpair>, greater<WIpair>> pq;
+	int start = 0;
+	vector<int> key(centerList.size() ,INT_MAX);
+	vector<int> parent(centerList.size(), -1); //store parent array which is mst
+	vector<bool> visited(centerList.size(), false);
+	pq.push(make_pair(0, start));
+	key[start] = 0;
+
+	while(!pq.empty()){
+		int current = pq.top().second;
+		pq.pop();
+
+		if(visited[current] == true){
+			continue;
+		}
+		visited[current] = true;
+
+	}
+}
+
+void Maze::buildCellVector(){
+	for (int i = 0; i < centerList.size(); i++)
+	{
+		for (int j = centerList[i].second - (cellWidth / 2 - 1); j < centerList[i].second + (cellWidth / 2); j++)
+		{
+			for (int k = centerList[i].first - (cellWidth / 2 - 1); k < centerList[i].first + (cellWidth / 2); k++)
+			{
+				if (i % 3 == 0)
+				{
+					grid[k][j] = 19;
+				}
+				else if (i % 3 == 1)
+				{
+					grid[k][j] = 20;
+				}
+				else if (i % 3 == 2)
+				{
+					grid[k][j] = 21;
+				}
+			}
+		}
+	}
+	
+	for (int i = 0; i < centerList.size(); i++)
+	{
+		cells.emplace_back(centerList[i].first, centerList[i].second, i);
+	}
+	for(int i = 0; i < cells.size(); i++){
+		cells[i].setPixels(cells[i].center.first, cells[i].center.second, cellWidth);
+	}
+	for(int i = 0; i < cells.size(); i++){
+		cellPixels = cells[i].getPixels();
+		for(int j = 0; j < cellPixels.size(); j++){
+			if(i % 3 == 0){
+			grid[cellPixels[j].first][cellPixels[j].second] = 25;
+			}else if(i % 3 == 1){
+			grid[cellPixels[j].first][cellPixels[j].second] = 26;
+			}else if(i % 3 == 2){
+			grid[cellPixels[j].first][cellPixels[j].second] = 27;
+			}
+		}
+	}
+	
+}
+
+
+void Maze::buildAdjCellVector(){
+	cellNeighbors.resize(cellCount);
+	for(int i = 0; i < cellCount; i++){
+			cellNeighbors[i].first = i;
+		if(i - 1 >= 0 && i % cellCountX != 0){
+			cellNeighbors[i].second.push(make_pair(cells[i-1].getWeight(), i-1));
+		}
+		if(i + 1 < cellCount && i % cellCountX != cellCountX - 1){
+			cellNeighbors[i].second.push(make_pair(cells[i+1].getWeight(), i+1));
+		}
+		if(i - cellCountX >= 0){
+			cellNeighbors[i].second.push(make_pair(cells[i-cellCountX].getWeight(), i-cellCountX));
+		}
+		if(i + cellCountX < cellCount - cellCountX){
+			cellNeighbors[i].second.push(make_pair(cells[i+cellCountX].getWeight(), i+cellCountX));
+		}
+	}
+
+	for(int i = 0; i < cellNeighbors.size(); i++){
+		cout << "INDEX: " << cellNeighbors[i].first << " ";
+		while(!cellNeighbors[i].second.empty()){
+			cout << "NEGHBOR: " << cellNeighbors[i].second.top().second << "  ";
+			cellNeighbors[i].second.pop();
+		}
+		cout << "\n";
+	}
+}
+
 /*
 struct cell{
 	int weight;
