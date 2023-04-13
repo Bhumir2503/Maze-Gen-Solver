@@ -1,266 +1,262 @@
 #include "maze.h"
 #include <iostream>
-#include <vector>
-#include <queue>
-using namespace std;
+#include <cstdlib>
+#include<unistd.h>
+//#include <dos.h>
 
-Maze::Maze()
-{
-	// Open SDL
+
+Maze::Maze(int n) {
+	this->size = n;
+	//Open SDL
 	SDL_Init(SDL_INIT_VIDEO);
-	// Create window and renderer
-	SDL_CreateWindowAndRenderer(WIDTH, HEIGHT, 0, &window, &renderer);
-	// Make renderer black
+	//Create window and renderer
+	SDL_CreateWindowAndRenderer(n+500, n+200, 0, &window, &renderer);
+	//Make renderer black
 	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
 	SDL_RenderClear(renderer);
 
-	// These function calls are for testing only
-	build_grid();
-	print_graph();
-	draw_grid();
-	draw_path_solver();
+	//These function calls are for testing only
+	build_grid(); //done
+	//print_graph();
+	adjMat_Builder(); //done
+	rand_prims(realAdjMat, realAdjMat.size());
 
-	// Hold screen until exit
-	while (quit == false)
-	{
-		if (SDL_PollEvent(&event) && event.type == SDL_QUIT)
-		{
+	
+
+
+	//Hold screen until exit
+	while (quit == false) {
+		if (SDL_PollEvent(&event) && event.type == SDL_QUIT) {
 			quit = true;
 			break;
 		}
 	}
 
-	// Upon quit, clean up SDL resources
+	//Upon quit, clean up SDL resources
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);
 	SDL_Quit();
 }
 
-// Traverses SDL window region pixel by pixel. Creates a grid where each cell
-// is 10x10 pixels. The center pixel of each cell is treated as a vertex
-// in a graph and an edge between every neighbor vertex is inserted into
-// the adjacency list
-void Maze::build_grid()
-{
-	for (size_t i = 0; i < WIDTH; ++i)
-	{
-		for (size_t j = 0; j < HEIGHT; ++j)
-		{
-			if (i % cellWidth == 0 || j % cellWidth == 0)
-			{
-				grid[i][j] = 1;
-			}
-			// else if((i % cellWidth >= (cellWidth/2 -10) && i % cellWidth <= (cellWidth/2 +10) )||(j % cellWidth >= (cellWidth/2 -10) && j % cellWidth <= (cellWidth/2 +10) )){
-			//	grid[i][j] = 2; //have a 3 pixel path in each cell in the 4th pixel row
-			// }
-			else if (i % cellWidth >= (cellWidth / 2 - 10) && i % cellWidth <= (cellWidth / 2 + 10) && j % cellWidth >= (cellWidth / 2 - 10) && j % cellWidth <= (cellWidth / 2 + 10))
-			{
-				grid[i][j] = 100;
-			}
-			else if ((i % cellWidth >= (cellWidth / 2 - 10) && i % cellWidth <= (cellWidth / 2 + 10)) && (j % cellWidth <= 50))
-			{ // up
-				grid[i][j] = 2;
-			}
-			else if ((i % cellWidth >= (cellWidth / 2 - 10) && i % cellWidth <= (cellWidth / 2 + 10)) && (j % cellWidth >= 50))
-			{ // down
-				grid[i][j] = 3;
-			}
-			else if ((i % cellWidth <= (cellWidth / 2 - 10)) && (j % cellWidth >= (cellWidth / 2 - 10) && j % cellWidth <= (cellWidth / 2 + 10)))
-			{ // left
-				grid[i][j] = 4;
-			}
-			else if ((i % cellWidth >= (cellWidth / 2 + 10)) && (j % cellWidth >= (cellWidth / 2 - 10) && j % cellWidth <= (cellWidth / 2 + 10))) // center +- (size/20 / 2)
-			{																																	  // left
-				grid[i][j] = 5;
-			}
-			else
-			{
-				grid[i][j] = 0;
-			}
 
-			// This condition only passes for pixels in the center of each cell
-			if (i % 50 == 0 && i % cellWidth != 0 && j % 50 == 0 && j % cellWidth != 0)
-			{
-				if (i > cellWidth / 2)
-				{
-					adjList[std::make_pair(i, j)].push_back(std::make_pair(i - cellWidth, j));
-				}
-				if (i < WIDTH - (cellWidth + 1))
-				{
-					adjList[std::make_pair(i, j)].push_back(std::make_pair(i + cellWidth, j));
-				}
-				if (j > cellWidth / 2)
-				{
-					adjList[std::make_pair(i, j)].push_back(std::make_pair(i, j - cellWidth));
-				}
-				if (j < -(cellWidth + 1))
-				{
-					adjList[std::make_pair(i, j)].push_back(std::make_pair(i, j + cellWidth));
-				}
-				centerList.push_back(make_pair(i, j));
+//Traverses SDL window region pixel by pixel. Creates a grid where each cell
+//is 10x10 pixels. The center pixel of each cell is treated as a vertex
+//in a graph and an edge between every neighbor vertex is inserted into
+//the adjacency list
+void Maze::build_grid() {
+	int cellSize = size/10;
+
+	//makes the walls
+	for(int i =0; i <= size; i++){
+		vector<int> tmp;
+		for(int j = 0; j <= size; j++){
+			if (i % 10 == 0 || j % 10 == 0) {
+				tmp.push_back(1);
+			}
+			else {
+				tmp.push_back(0);
 			}
 		}
-	}
-	for (int i = 0; i < centerList.size(); i++)
-	{
-		for (int j = centerList[i].second - (cellWidth / 2 - 1); j < centerList[i].second + (cellWidth / 2); j++)
-		{
-			for (int k = centerList[i].first - (cellWidth / 2 - 1); k < centerList[i].first + (cellWidth / 2); k++)
-			{
-				if (i % 3 == 0)
-				{
-					grid[k][j] = 19;
-				}
-				else if (i % 3 == 1)
-				{
-					grid[k][j] = 20;
-				}
-				else if (i % 3 == 2)
-				{
-					grid[k][j] = 21;
-				}
-			}
-		}
+		grid.push_back(tmp);
 	}
 	
-	for (int i = 0; i < centerList.size(); i++)
-	{
-			cells.emplace_back(centerList[i].first, centerList[i].second);
-	}
-	for(int i = 0; i < cells.size(); i++){
-		cells[i].setPixels(cells[i].center.first, cells[i].center.second, cellWidth);
-	}
-	vector<pair<int, int>> cellPixels;
-	for(int i = 0; i < cells.size(); i++){
-		cellPixels = cells[i].getPixels();
-		for(int j = 0; j < cellPixels.size(); j++){
-			if(i % 3 == 0){
-			grid[cellPixels[j].first][cellPixels[j].second] = 25;
-			}else if(i % 3 == 1){
-			grid[cellPixels[j].first][cellPixels[j].second] = 26;
-			}else if(i % 3 == 2){
-			grid[cellPixels[j].first][cellPixels[j].second] = 27;
+
+	//draws the grid and makes adjMatrix
+	for (int i = 0; i < grid.size() ; ++i) {
+		vector<int> tmp;
+		for (int j = 0; j < grid[i].size(); ++j) {
+			if (grid[i][j] == 1) {
+				SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);		//Set draw color to white
+				SDL_RenderDrawPoint(renderer, i, j);			//Draw pixel at given coordinates
+			}
+			if(i < 10 && j < 10 && grid[i][j] !=1){
+				SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);		//Set draw color to green
+				SDL_RenderDrawPoint(renderer, i, j);			//Draw pixel at given coordinates
+			}
+			if(i > size-10 && j > size-10 && grid[i][j] !=1 && i < size && j <size){
+				SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);		//Set draw color to red
+				SDL_RenderDrawPoint(renderer, i, j);			//Draw pixel at given coordinates
+			}
+
+			if(i % 5 == 0 && j % 5 == 0 && grid[i][j] != 1){
+				
+				pair<int, int> p(i,j);
+				edges.push_back(p);
+				//weights.push_back((rand()%20) +1);
+				tmp.push_back((rand()%20) +1);
 			}
 		}
-	}
-	
-}
-
-// Displays the initial grid
-void Maze::draw_grid()
-{
-	for (size_t i = 0; i < WIDTH; ++i)
-	{
-		for (size_t j = 0; j < HEIGHT; ++j)
-		{
-			if (grid[i][j] == 1)
-			{
-				SDL_SetRenderDrawColor(renderer, 255, 0, 255, 255); // Set draw color to purple
-				SDL_RenderDrawPoint(renderer, i, j);				// Draw pixel at given coordinates
-			}
+		if(tmp.size() != 0){
+			adjMat.push_back(tmp);
 		}
 	}
-	SDL_RenderPresent(renderer); // Show updated render
+	SDL_RenderPresent(renderer);		//Show updated render
+
 }
 
-void Maze::draw_path_solver()
-{
-	for (size_t i = 0; i < WIDTH; i++)
-	{
-		for (size_t j = 0; j < HEIGHT; j++)
-		{
-			if (grid[i][j] == 25)
-			{
-				SDL_SetRenderDrawColor(renderer, 255, 255, 0, 255); // Set draw color to turquoise
-				SDL_RenderDrawPoint(renderer, i, j);
+
+void Maze::adjMat_Builder(){
+	int maxSize = adjMat.size()*adjMat.size();
+	//cout <<adjMat.size() << " " << maxSize << endl;
+
+	for(int i = 0; i < maxSize; i++){
+		vector<int> tmp; 
+		for(int j = 0; j < maxSize; j++){
+			int check =0;
+			//up
+			if(i>= adjMat.size()){
+				if(j == i-adjMat.size()){
+					check =1;
+					int row = j/adjMat.size();
+					int col = j%adjMat.size();
+					tmp.push_back(adjMat[row][col]);
+				}
 			}
-			if (grid[i][j] == 26)
-			{
-				SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255); // Set draw color to turquoise
-				SDL_RenderDrawPoint(renderer, i, j);
+			
+			//down
+			if(i < maxSize-adjMat.size()){
+				if(j == i+adjMat.size()){
+					check =1;					
+					int row = j/adjMat.size();
+					int col = j%adjMat.size();
+					tmp.push_back(adjMat[row][col]);
+				}
 			}
-			if (grid[i][j] == 27)
-			{
-				SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255); // Set draw color to turquoise
-				SDL_RenderDrawPoint(renderer, i, j);
+
+			//right
+			if((i+1)%adjMat.size() != 0){
+				if(j == i+1){
+					check =1;
+					int row = j/adjMat.size();
+					int col = j%adjMat.size();
+					tmp.push_back(adjMat[row][col]);
+				}
 			}
-			if (grid[i][j] == 4)
-			{
-				SDL_SetRenderDrawColor(renderer, 0, 204, 0, 255); // Set draw color to turquoise
-				SDL_RenderDrawPoint(renderer, i, j);
+
+			if((i+1)%adjMat.size() != 1){
+				if(j == i-1){
+					check =1;
+					int row = j/adjMat.size();
+					int col = j%adjMat.size();
+					tmp.push_back(adjMat[row][col]);
+				}
 			}
-			if (grid[i][j] == 5)
-			{
-				SDL_SetRenderDrawColor(renderer, 255, 128, 0, 255); // Set draw color to turquoise
-				SDL_RenderDrawPoint(renderer, i, j);
+
+			if(check ==0){
+				tmp.push_back(1000);
 			}
 		}
+		realAdjMat.push_back(tmp);
+		
 	}
-	SDL_RenderPresent(renderer);
 }
 
-// Testing purposes only
-// Displays the contents of the graph by printing the adjacency list
-void Maze::print_graph()
-{
-	for (auto i = adjList.begin(); i != adjList.end(); ++i)
-	{
-		std::cout << "(" << (*i).first.first << ", " << (*i).first.second << ")"
-				  << " => ";
-		std::vector<std::pair<int, int>> edges = (*i).second;
-		for (size_t i = 0; i < edges.size(); ++i)
-		{
-			std::cout << "(" << edges[i].first << ", " << edges[i].second << ")";
+
+void Maze::rand_prims(vector<vector<int>> adj, int vert){
+	    //used to store the new graph with lowest weight
+    int newGraph[vert];
+    
+    int key[vert];
+    
+ 	bool setChecker[vert];
+    // Initialize all keys as and setchecker to false
+    for (int i = 0; i < vert; i++){
+        key[i] = 99999, setChecker[i] = false;
+    }
+ 
+
+    key[0] = 0;
+   
+
+    newGraph[0] = -1;
+
+    for (int count = 0; count < vert - 1; count++) {
+         
+     
+     int mintmp = 9999999;
+     int index;
+       //finds the lowest index and also sets the setChecker at that index true to signal that its been added
+       for (int v = 0; v < adj.size(); v++){
+          if (setChecker[v] == false && key[v] < mintmp){
+            mintmp = key[v];
+            index = v;
+          }
+        }
+        
+        setChecker[index] = true;
+
+        for (int w = 0; w < vert; w++){
+ 
+            if (adj[index][w] && setChecker[w] == false && adj[index][w] < key[w]){
+                newGraph[w] = index;
+                key[w] = adj[index][w];
+            }
+
 		}
-		std::cout << std::endl;
-	}
-}
-/*
-struct cell{
-	int weight;
-	pair<int, int> center;
-	vector<pair<int, int>> pixels;
-	priority_queue<cell*, vector<cell*>, greater<cell*>> neighbors;
-	cell();
-	cell(int x, int y);
-	int getWeight();
-	pair<int, int> getCenter();
-	void setPixels(int topLeftX, int topLeftY, int cellPixelSize);
-	void setNeigbor();
-	cell* getNeighbor();
-};
+    }
 
-cell::cell();
 
-cell::cell(int x, int y){
-	center.first = x;
-	center.second = y;
+	gen_maze(newGraph, vert);
 }
 
-int cell::getWeight(){
-	return this->weight;
-}
 
-pair<int, int> cell::getCenter(){
-	return this->center;
-}
-
-void cell::setPixels(int topLeftX, int topLeftY, int cellPixelSize){
-	for(int i = 0; i < cellPixelSize; i++){
-		for(int j = 0; j < cellPixelSize; j++){
-			this->pixels.push_back(make_pair(j + topLeftX, i + topLeftY));
+void Maze::gen_maze(int mazeLayout[],int vert){
+	cout << size /10 << endl;
+	for(int i =1; i < vert; i++){
+		int a = i;
+		int b = mazeLayout[i];
+		if(a > b){
+			int tmp = b;
+			b = a;
+			a = tmp;
 		}
+
+		
+		//right and left
+		if(a+1 == b){
+			
+			int j = edges[a].second+5;
+			int k = edges[a].first-4;
+			for(int l = 0; l < 9; l++){
+				SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);		//Set draw color to green
+				SDL_RenderDrawPoint(renderer, j, k);			//Draw pixel at given coordinates
+				k++;
+			}
+			SDL_RenderPresent(renderer);
+			//unsigned int microsecond = 1000000;
+			usleep(5000);
+		}
+
+		//up and down
+		else if(a+(size/10) == b){
+			int j = edges[a].second-4;
+			int k = edges[a].first+5;
+
+			for(int l =0; l < 9; l++){
+				SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);		//Set draw color to green
+				SDL_RenderDrawPoint(renderer, j, k);			//Draw pixel at given coordinates
+				j++;
+			}
+			SDL_RenderPresent(renderer);
+			//unsigned int microsecond = 1000000;
+			usleep(5000);
+		}
+
+
+
+		
+
+		
+
 	}
 }
 
-int main(){
-	int height = 1000;
-	int width = 1000;
-	int cellSize = cellWidth;
 
-	for(int i = 0; i < height; i+cellWidth){
-		for(int j = 0; )
+//Testing purposes only
+//Displays the contents of the graph by printing the adjacency list
+void Maze::print_graph() {
+	for(int i = 0; i < edges.size(); i++){
+		cout << edges[i].first << " " << edges[i].second << endl;
 	}
-}
 
-*/
+}
