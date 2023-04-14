@@ -12,19 +12,22 @@ using namespace std;
 
 class Maze {
 	public:
-		Maze(int);							//Sets initial state of maze and SDL window
+		Maze();							//Sets initial state of maze and SDL window
+		void repeat();
+		void blackWindow();
+		void button_builder();
 		void build_grid();	//Builds the initial grid before maze construction
 		void print_graph();	//Displays contents of adjList
 		void adjMat_Builder();
 		void rand_prims(vector<vector<int>>, int);		//randomized DFS used to construct min span tree
 		void gen_maze(int[], int);
 
-		
-		int size;
 	private:
 		//int grid[WIDTH][HEIGHT];		//Internal state of grid. Used to display to SDL window
 		//adjList represents the connected graph of each cell in the grid. This graph is used to 
 		//construct a MST that determines the layout of the final maze
+		int size;
+		int cell;
 		vector<vector<int>> grid;
 		vector<pair<int,int>> edges;
 		vector<int> weights;
