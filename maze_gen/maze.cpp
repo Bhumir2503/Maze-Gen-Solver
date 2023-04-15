@@ -20,8 +20,10 @@ Maze::Maze() {
 
 
 	//These function calls are for testing only
-	repeat();
-	
+	Sizebutton_builder();
+	if(!quit){
+		repeat();
+	}
 
 
 	//Hold screen until exit
@@ -38,91 +40,124 @@ Maze::Maze() {
 	SDL_Quit();
 }
 
-void Maze::repeat(){
+
+void Maze::reset(){
 	grid.clear();
 	edges.clear();
 	weights.clear();
 	adjMat.clear();
 	realAdjMat.clear();
-	blackWindow();
-	button_builder();
+	blackWindow();//done
+	Sizebutton_builder(); //done
 	build_grid(); //done
 	adjMat_Builder(); //done
 	rand_prims(realAdjMat, realAdjMat.size()); //done
 }
 
 
+void Maze::repeat(){
+	grid.clear();
+	edges.clear();
+	weights.clear();
+	adjMat.clear();
+	realAdjMat.clear();
+	blackWindow();//done
+	build_grid(); //done
+	adjMat_Builder(); //done
+	rand_prims(realAdjMat, realAdjMat.size()); //done
+	//gen_maze //done
+}
+
+
 void:: Maze::blackWindow(){
-	for(int i = 0; i < 1001; i++){
+	for(int i = 0; i < 1500; i++){
 		for(int j = 0; j < 1001; j++){
-			SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);		//Set draw color to green
-			SDL_RenderDrawPoint(renderer, i, j);			//Draw pixel at given coordinates
+			SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);		
+			SDL_RenderDrawPoint(renderer, i, j);			
 		}
 	}
 	SDL_RenderPresent(renderer);
 }
-void Maze::button_builder(){
+
+
+int Maze::Sizebutton_builder(){
 	for(int i = 0; i < 200; i++){
+
+		//5
 		for(int j = 0; j < 100; j++){
-			SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);		//Set draw color to green
-			SDL_RenderDrawPoint(renderer, i+50, j+1050);			//Draw pixel at given coordinates
+			SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);		
+			SDL_RenderDrawPoint(renderer, i+50, j+1050);			
 		}
 
+		//10
 		for(int j = 0; j < 100; j++){
-			SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);		//Set draw color to green
-			SDL_RenderDrawPoint(renderer, i+350, j+1050);			//Draw pixel at given coordinates
+			SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);		
+			SDL_RenderDrawPoint(renderer, i+350, j+1050);			
 		}
 
+		//25
 		for(int j = 0; j < 100; j++){
-			SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);		//Set draw color to green
-			SDL_RenderDrawPoint(renderer, i+650, j+1050);			//Draw pixel at given coordinates
+			SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);		
+			SDL_RenderDrawPoint(renderer, i+650, j+1050);			
 		}
 
+		//50
 		for(int j = 0; j < 100; j++){
-			SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);		//Set draw color to green
-			SDL_RenderDrawPoint(renderer, i+950, j+1050);			//Draw pixel at given coordinates
+			SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);		
+			SDL_RenderDrawPoint(renderer, i+950, j+1050);			
 		}
 
+		//100
 		for(int j = 0; j < 100; j++){
-			SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);		//Set draw color to green
-			SDL_RenderDrawPoint(renderer, i+1250, j+1050);			//Draw pixel at given coordinates
+			SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);		
+			SDL_RenderDrawPoint(renderer, i+1250, j+1050);			
 		}
 	}
+
+	
+	for(int j = 0; j < 100; j++){
+		//exit 
+		for(int i = 0; i < 140; i++){
+			SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);		
+			SDL_RenderDrawPoint(renderer, i+1100, j+100);	
+		}
+	}
+	
 
 	//5*5
 	
 	for(int i =0 ; i <50; i++){
 		for(int j =0; j<5; j++){
-			SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);		//Set draw color to green
-			SDL_RenderDrawPoint(renderer, i+125, j+1075);			//Draw pixel at given coordinates
+			SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);		
+			SDL_RenderDrawPoint(renderer, i+125, j+1075);			
 		}
 	}
 
 	for(int i =0 ; i <50; i++){
 		for(int j =0; j<5; j++){
-			SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);		//Set draw color to green
-			SDL_RenderDrawPoint(renderer, i+125, j+1100);			//Draw pixel at given coordinates
+			SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);		
+			SDL_RenderDrawPoint(renderer, i+125, j+1100);			
 		}
 	}
 
 	for(int i =0 ; i <50; i++){
 		for(int j =0; j<5; j++){
-			SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);		//Set draw color to green
-			SDL_RenderDrawPoint(renderer, i+125, j+1125);			//Draw pixel at given coordinates
+			SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);		
+			SDL_RenderDrawPoint(renderer, i+125, j+1125);			
 		}
 	}
 
 	for(int i = 0; i< 25; i++){
 		for(int j = 0; j <5; j++){
-			SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);		//Set draw color to green
-			SDL_RenderDrawPoint(renderer, 125+j, 1080+i);			//Draw pixel at given coordinates
+			SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);		
+			SDL_RenderDrawPoint(renderer, 125+j, 1080+i);			
 		}
 	}
 
 	for(int i = 0; i< 25; i++){
 		for(int j = 0; j <5; j++){
-			SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);		//Set draw color to green
-			SDL_RenderDrawPoint(renderer, 170+j, 1105+i);			//Draw pixel at given coordinates
+			SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);		
+			SDL_RenderDrawPoint(renderer, 170+j, 1105+i);			
 		}
 	}
 
@@ -176,6 +211,14 @@ void Maze::button_builder(){
 					}
 
 				}
+				if(y >=100 && y <=200){
+					//exit
+					if(x>=1100 && x<= 1240){
+					notClicked = false;
+					quit = true;
+					return 0;
+					}
+				}
 			}
 		}
 
@@ -193,10 +236,6 @@ void Maze::button_builder(){
 }
 
 
-//Traverses SDL window region pixel by pixel. Creates a grid where each cell
-//is 10x10 pixels. The center pixel of each cell is treated as a vertex
-//in a graph and an edge between every neighbor vertex is inserted into
-//the adjacency list
 void Maze::build_grid() {
 	//makes the walls
 	for(int i =0; i <= 1000; i++){
@@ -219,15 +258,15 @@ void Maze::build_grid() {
 		for (int j = 0; j < grid[i].size(); ++j) {
 			if (grid[i][j] == 1) {
 				SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);		//Set draw color to white
-				SDL_RenderDrawPoint(renderer, i, j);			//Draw pixel at given coordinates
+				SDL_RenderDrawPoint(renderer, i, j);			
 			}
 			if(i < cell && j < cell && grid[i][j] !=1){
-				SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);		//Set draw color to green
-				SDL_RenderDrawPoint(renderer, i, j);			//Draw pixel at given coordinates
+				SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);		
+				SDL_RenderDrawPoint(renderer, i, j);			
 			}
 			if(i > 1000-cell && j > 1000-cell && grid[i][j] !=1 && i < 1000 && j <1000){
 				SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);		//Set draw color to red
-				SDL_RenderDrawPoint(renderer, i, j);			//Draw pixel at given coordinates
+				SDL_RenderDrawPoint(renderer, i, j);			
 			}
 
 			if(i % (cell/2) == 0 && j % (cell/2) == 0 && grid[i][j] != 1){
@@ -357,12 +396,15 @@ void Maze::rand_prims(vector<vector<int>> adj, int vert){
 }
 
 
-void Maze::gen_maze(int mazeLayout[],int vert){
+int Maze::gen_maze(int mazeLayout[],int vert){
 	
 	for(int i =1; i < vert; i++){
 		int a = i;
 		int b = mazeLayout[i];
-		//cout << a<< " "<< b<< endl;
+
+		realAdjMat[a][b] =50;
+		realAdjMat[b][a] = 50;
+
 		if(a > b){
 			int tmp = b;
 			b = a;
@@ -372,12 +414,13 @@ void Maze::gen_maze(int mazeLayout[],int vert){
 		
 		//right and left
 		if(a+1 == b){
-			
+
 			int j = edges[a].second+(cell/2);
 			int k = edges[a].first-(cell/2)+1;
 			for(int l = 0; l < (cell-1); l++){
-				SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);		//Set draw color to green
-				SDL_RenderDrawPoint(renderer, j, k);			//Draw pixel at given coordinates
+				SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);		
+				SDL_RenderDrawPoint(renderer, j, k);
+				grid[j][k] = 0;			
 				k++;
 			}
 			SDL_RenderPresent(renderer);
@@ -390,8 +433,9 @@ void Maze::gen_maze(int mazeLayout[],int vert){
 			int k = edges[a].first+(cell/2);
 
 			for(int l =0; l < (cell-1); l++){
-				SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);		//Set draw color to green
-				SDL_RenderDrawPoint(renderer, j, k);			//Draw pixel at given coordinates
+				SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);		
+				SDL_RenderDrawPoint(renderer, j, k);			
+				grid[j][k] =0;
 				j++;
 			}
 			SDL_RenderPresent(renderer);
@@ -399,6 +443,48 @@ void Maze::gen_maze(int mazeLayout[],int vert){
 		}
 	}
 
+	for(int j = 0; j < 100; j++){
+		//exit and reset
+		for(int i = 0; i < 140; i++){
+			SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);		
+			SDL_RenderDrawPoint(renderer, i+1100, j+100);			
+			//SDL_SetRenderDrawColor(renderer, 255, 255, 0, 255);		
+			//SDL_RenderDrawPoint(renderer, i+1260, j+100);			
+		}
+
+		//BFS
+		for(int i =0; i < 300; i++){
+			SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);		
+			SDL_RenderDrawPoint(renderer, i+1100, j+325);			
+		}
+
+		//DFS
+		for(int i =0; i < 300; i++){
+			SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);		
+			SDL_RenderDrawPoint(renderer, i+1100, j+550);			
+		}
+		
+		//Djikstra's
+		for(int i =0; i < 300; i++){
+			SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);		
+			SDL_RenderDrawPoint(renderer, i+1100, j+775);			
+		}
+
+	}
+
+
+
+	SDL_RenderPresent(renderer);
+	for(int i = 0; i < realAdjMat.size(); i++){
+		for(int j = 0; j < realAdjMat.size(); j++){
+			if(realAdjMat[i][j] != 50){
+				realAdjMat[i][j] = 0;
+			}
+			else{
+				realAdjMat[i][j] =1;
+			}
+		}
+	}
 
 
 
@@ -406,40 +492,72 @@ void Maze::gen_maze(int mazeLayout[],int vert){
 	bool notClicked = true;
 	while(notClicked){
 		int x,y;
-		SDL_GetMouseState(&x,&y);
-		if (SDL_PollEvent(&event) && event.type == SDL_QUIT) {
-			notClicked = false;
-			break;
-		}
+		
 		if(SDL_PollEvent(&event) &&event.type == SDL_MOUSEBUTTONDOWN){
+			SDL_GetMouseState(&x,&y);
 				if(y >= 1050 && y <=1150 ){
 					if(x>50 &&x<250){
+						size = 50;
+						cell = 1000/(size/10);
+						notClicked = false;
 						repeat();
 					}
 
 					if(x>350 &&x<550){
+						size = 100;
+						cell = 1000/(size/10);
+						notClicked = false;
 						repeat();
 					}
 
 					if(x>650 &&x<850){
+						size = 250;
+						cell = 1000/(size/10);
+						notClicked = false;
 						repeat();
 					}
 
 					if(x>950 &&x<1150){
+						size =500;
+						cell = 1000/(size/10);
+						notClicked = false;
 						repeat();
 					}
 
 					if(x>1250 &&x<1450){
+						size = 1000;
+						cell = 1000/(size/10);
+						notClicked = false;
 						repeat();
 					}
 
 				}
-				else{
+				if(y >=100 && y <=200){
+					//exit
+					if(x>=1100 && x<= 1240){
 					notClicked = false;
 					quit = true;
-					SDL_DestroyRenderer(renderer);
-					SDL_DestroyWindow(window);
-					SDL_Quit();
+					return 0;
+					}
+					if(x>=1260 && x <=1400){
+						notClicked = false;
+						visited = vector<bool>(realAdjMat.size(), false);
+						DFS(0);
+						cout << pathway.size() << endl;
+						for(int k = 0; k < pathway.size(); k++){
+							for(int i = 0; i < cell; i++){
+								int a = edges[pathway[k]].second-(cell/2);
+								int b = edges[pathway[k]].first- (cell/2);
+								for(int j = 0; j < cell; j++){
+									if(grid[i+a][j+b] != 1){
+										SDL_SetRenderDrawColor(renderer, 0, 150, 0, 255);		//Set draw color to white
+										SDL_RenderDrawPoint(renderer, i+a, j+b);
+									}
+								}
+								SDL_RenderPresent(renderer);
+							}
+						}
+					}
 				}
 			
 		}
@@ -450,11 +568,49 @@ void Maze::gen_maze(int mazeLayout[],int vert){
 }
 
 
-//Testing purposes only
-//Displays the contents of the graph by printing the adjacency list
-void Maze::print_graph() {
-	for(int i = 0; i < edges.size(); i++){
-		cout << edges[i].first << " " << edges[i].second << endl;
+int Maze::DFS(int start){
+	// Print the current node
+	int check = 0;
+    cout << start << " " << endl;
+	int a = edges[start].second;
+	int b = edges[start].first;
+	a = a-(cell/2);
+	b = b-(cell/2);
+	
+	for(int i = 0; i < cell; i++){
+		for(int j = 0; j < cell; j++){
+			if(grid[i+a][j+b] != 1){
+				SDL_SetRenderDrawColor(renderer, 200, 200, 200, 255);		//Set draw color to white
+				SDL_RenderDrawPoint(renderer, i+a, j+b);
+			}
+		}
+	}
+	
+	
+
+	SDL_RenderPresent(renderer);
+	usleep(5000000/(10*size));
+	
+	if(start == realAdjMat.size()-1){
+		pathway.push_back(start);
+		return -1;
 	}
 
+    // Set current node as visited
+    visited[start] = true;
+ 
+    // For every node of the graph
+    for (int i = 0; i < realAdjMat[start].size(); i++) {
+ 
+        // If some node is adjacent to the current node
+        // and it has not already been visited
+        if (realAdjMat[start][i] == 1 && (!visited[i])) {
+            check = DFS(i);
+			if(check == -1){
+				pathway.push_back(start);
+				return -1;
+			}
+        }
+    }
 }
+
