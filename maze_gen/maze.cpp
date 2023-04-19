@@ -61,6 +61,7 @@ void Maze::repeat(){
 	weights.clear();
 	adjMat.clear();
 	realAdjMat.clear();
+	pathway.clear();
 	blackWindow();//done
 	build_grid(); //done
 	adjMat_Builder(); //done
@@ -444,12 +445,11 @@ int Maze::gen_maze(int mazeLayout[],int vert){
 	}
 
 	for(int j = 0; j < 100; j++){
-		//exit and reset
-		for(int i = 0; i < 140; i++){
+		//exit
+		for(int i = 0; i < 300; i++){
 			SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);		
 			SDL_RenderDrawPoint(renderer, i+1100, j+100);			
-			//SDL_SetRenderDrawColor(renderer, 255, 255, 0, 255);		
-			//SDL_RenderDrawPoint(renderer, i+1260, j+100);			
+	
 		}
 
 		//BFS
@@ -532,30 +532,68 @@ int Maze::gen_maze(int mazeLayout[],int vert){
 					}
 
 				}
+
+				//exit
 				if(y >=100 && y <=200){
 					//exit
-					if(x>=1100 && x<= 1240){
+					if(x>=1100 && x<= 1400){
 					notClicked = false;
 					quit = true;
 					return 0;
 					}
-					if(x>=1260 && x <=1400){
+				}
+
+				//BFS
+				if(y >=325 && y <= 425){
+					if(x>1100 && x<1400){
 						notClicked = false;
 						visited = vector<bool>(realAdjMat.size(), false);
-						DFS(0);
-						cout << pathway.size() << endl;
-						for(int k = 0; k < pathway.size(); k++){
+						BFS(0);
+						cout << pathway.size();
+						for(int k = pathway.size()-1; k > 0; k--){
 							for(int i = 0; i < cell; i++){
 								int a = edges[pathway[k]].second-(cell/2);
 								int b = edges[pathway[k]].first- (cell/2);
 								for(int j = 0; j < cell; j++){
 									if(grid[i+a][j+b] != 1){
-										SDL_SetRenderDrawColor(renderer, 0, 150, 0, 255);		//Set draw color to white
+										SDL_SetRenderDrawColor(renderer, 48, 255, 96, 255);		//Set draw color to white
 										SDL_RenderDrawPoint(renderer, i+a, j+b);
 									}
 								}
-								SDL_RenderPresent(renderer);
 							}
+							SDL_RenderPresent(renderer);
+							usleep(5000000/(size));
+						}
+
+					}
+				}
+
+				//DFS
+				if(y >= 550 && y <= 650){
+					if(x>=1100 && x <=1400){
+						notClicked = false;
+						visited = vector<bool>(realAdjMat.size(), false);
+						DFS(0);
+						for(int k = pathway.size()-1; k > 0; k--){
+							for(int i = 0; i < cell; i++){
+								int a = edges[pathway[k]].second-(cell/2);
+								int b = edges[pathway[k]].first- (cell/2);
+								for(int j = 0; j < cell; j++){
+									if(grid[i+a][j+b] != 1){
+										SDL_SetRenderDrawColor(renderer, 48, 255, 96, 255);		//Set draw color to white
+										SDL_RenderDrawPoint(renderer, i+a, j+b);
+									}
+								}
+							}
+							SDL_RenderPresent(renderer);
+							usleep(5000000/(size));
+						}
+
+						int checker = DFS_decide();
+						if(checker == -1){
+							notClicked = false;
+							quit = true;
+							return 0;
 						}
 					}
 				}
@@ -567,15 +605,70 @@ int Maze::gen_maze(int mazeLayout[],int vert){
 
 }
 
+int Maze::BFS(int start){
+	vector<int> q;
+    q.push_back(start);
+  
+    // Set source as visited
+    visited[start] = true;
+    int vis;
+    while (!q.empty()) {
+        vis = q[0];
+		int a = edges[vis].second;
+		int b = edges[vis].first;
+		a = a-(cell/2);
+		b = b-(cell/2);
+		for(int i = 0; i < cell; i++){
+			for(int j = 0; j < cell; j++){
+				if(grid[i+a][j+b] != 1){
+					SDL_SetRenderDrawColor(renderer, 200, 200, 200, 255);		//Set draw color to white
+					SDL_RenderDrawPoint(renderer, i+a, j+b);
+				}
+			}
+		}
+		SDL_RenderPresent(renderer);
+		usleep(5000000/(10*size));
+
+        // Print the current node
+        //cout << vis << " ";
+        q.erase(q.begin());
+  
+        // For every adjacent vertex to the current vertex
+        for (int i = 0; i < realAdjMat[vis].size(); i++) {
+            if (realAdjMat[vis][i] == 1 && (!visited[i])) {
+				if(realAdjMat[vis][i] == realAdjMat.size()){
+					q.clear();
+					return 0;
+				}
+                // Push the adjacent node to the queue
+                q.push_back(i);
+  
+                // Set
+                visited[i] = true;
+            }
+        }
+    }
+}
 
 int Maze::DFS(int start){
 	// Print the current node
 	int check = 0;
-    cout << start << " " << endl;
+    //cout << start << " " << endl;
 	int a = edges[start].second;
 	int b = edges[start].first;
 	a = a-(cell/2);
 	b = b-(cell/2);
+	
+
+	
+	
+
+
+	
+	if(start == realAdjMat.size()-1){
+		pathway.push_back(start);
+		return -1;
+	}
 	
 	for(int i = 0; i < cell; i++){
 		for(int j = 0; j < cell; j++){
@@ -585,16 +678,8 @@ int Maze::DFS(int start){
 			}
 		}
 	}
-	
-	
-
 	SDL_RenderPresent(renderer);
 	usleep(5000000/(10*size));
-	
-	if(start == realAdjMat.size()-1){
-		pathway.push_back(start);
-		return -1;
-	}
 
     // Set current node as visited
     visited[start] = true;
@@ -614,3 +699,136 @@ int Maze::DFS(int start){
     }
 }
 
+int Maze::DFS_decide(){
+	bool notClicked = true;
+	while(notClicked){
+		int x,y;
+		
+		if(SDL_PollEvent(&event) &&event.type == SDL_MOUSEBUTTONDOWN){
+			SDL_GetMouseState(&x,&y);
+				if(y >= 1050 && y <=1150 ){
+					if(x>50 &&x<250){
+						size = 50;
+						cell = 1000/(size/10);
+						notClicked = false;
+						repeat();
+					}
+
+					if(x>350 &&x<550){
+						size = 100;
+						cell = 1000/(size/10);
+						notClicked = false;
+						repeat();
+					}
+
+					if(x>650 &&x<850){
+						size = 250;
+						cell = 1000/(size/10);
+						notClicked = false;
+						repeat();
+					}
+
+					if(x>950 &&x<1150){
+						size =500;
+						cell = 1000/(size/10);
+						notClicked = false;
+						repeat();
+					}
+
+					if(x>1250 &&x<1450){
+						size = 1000;
+						cell = 1000/(size/10);
+						notClicked = false;
+						repeat();
+					}
+
+				}
+				if(y >=100 && y <=200){
+					//exit
+					if(x>=1100 && x<= 14000){
+					notClicked = false;
+					quit = true;
+					return -1;
+					}
+				}
+
+				if(y >=325 && y <= 425){
+					if(x>1100 && x<1400){
+						notClicked = false;
+						visited = vector<bool>(realAdjMat.size(), false);
+						BFS(0);
+						cout << pathway.size();
+						for(int k = pathway.size()-1; k > 0; k--){
+							for(int i = 0; i < cell; i++){
+								int a = edges[pathway[k]].second-(cell/2);
+								int b = edges[pathway[k]].first- (cell/2);
+								for(int j = 0; j < cell; j++){
+									if(grid[i+a][j+b] != 1){
+										SDL_SetRenderDrawColor(renderer, 48, 255, 96, 255);		//Set draw color to white
+										SDL_RenderDrawPoint(renderer, i+a, j+b);
+									}
+								}
+							}
+							SDL_RenderPresent(renderer);
+							usleep(5000000/(size));
+						}
+
+					}
+				}
+
+
+				if(y >= 550 && y <= 650){
+					if(x>=1100 && x <=1400){
+						for(int i = 0; i< 1001; i++){
+							for(int j = 0; j < 1001; j++){
+								if(grid[i][j] != 1){
+										SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);		//Set draw color to white
+										SDL_RenderDrawPoint(renderer, i, j);
+										if(i>0 && i < cell && j> 0 && j < cell){
+											SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);		//Set draw color to white
+											SDL_RenderDrawPoint(renderer, i, j);
+										}
+										if(i>1001-cell && i < 1001 && j> 1001-cell && j < 1001){
+											SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);		//Set draw color to white
+											SDL_RenderDrawPoint(renderer, i, j);
+										}
+										
+								}
+							}
+						}
+						SDL_RenderPresent(renderer);
+						pathway.clear();
+						notClicked = false;
+						visited = vector<bool>(realAdjMat.size(), false);
+						DFS(0);
+						//cout << pathway.size() << endl;
+						for(int k = pathway.size()-1; k > 0; k--){
+							for(int i = 0; i < cell; i++){
+								int a = edges[pathway[k]].second-(cell/2);
+								int b = edges[pathway[k]].first- (cell/2);
+								for(int j = 0; j < cell; j++){
+									if(grid[i+a][j+b] != 1){
+										SDL_SetRenderDrawColor(renderer, 48, 255, 96, 255);		//Set draw color to white
+										SDL_RenderDrawPoint(renderer, i+a, j+b);
+									}
+								}
+							}
+							SDL_RenderPresent(renderer);
+							usleep(5000000/(size));
+						}
+
+						int checker = DFS_decide();
+						if(checker == -1){
+							notClicked = false;
+							quit = true;
+							return 0;
+						}
+
+						
+					}
+				}
+			
+		}
+
+	}
+}
