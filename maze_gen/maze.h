@@ -21,7 +21,7 @@ class Maze {
 		void adjMat_Builder();
 		void rand_prims(vector<vector<int>>, int);		//randomized DFS used to construct min span tree
 		int gen_maze(int[], int);
-		int BFS(int);
+		int BFS(int, int[]);
 		int BFS_decide();
 		int DFS(int);
 		int DFS_decide();

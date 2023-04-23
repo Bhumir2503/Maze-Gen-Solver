@@ -7,7 +7,6 @@
 
 
 Maze::Maze() {
-	//this->size = n;
 	//Open SDL
 	SDL_Init(SDL_INIT_VIDEO);
 	//Create window and renderer
@@ -19,20 +18,14 @@ Maze::Maze() {
 	
 
 
-	//These function calls are for testing only
-	Sizebutton_builder();
-	if(!quit){
-		repeat();
-	}
+	
+	Sizebutton_builder();								//makes the graph size button(blue) and exit button(red)
+	build_grid(); //done								//builds a grid
+	adjMat_Builder(); //done							//makes an adjMat matrix that would be used in prims
+	rand_prims(realAdjMat, realAdjMat.size());			//creates a maze using prims algorithm
 
 
-	//Hold screen until exit
-	while (quit == false) {
-		if (SDL_PollEvent(&event) && event.type == SDL_QUIT) {
-			quit = true;
-			break;
-		}
-	}
+	
 
 	//Upon quit, clean up SDL resources
 	SDL_DestroyRenderer(renderer);
@@ -41,20 +34,13 @@ Maze::Maze() {
 }
 
 
-void Maze::reset(){
-	grid.clear();
-	edges.clear();
-	weights.clear();
-	adjMat.clear();
-	realAdjMat.clear();
-	blackWindow();//done
-	Sizebutton_builder(); //done
-	build_grid(); //done
-	adjMat_Builder(); //done
-	rand_prims(realAdjMat, realAdjMat.size()); //done
-}
 
 
+
+/*
+repeat funtion that clears every vector and start a new maze
+This function is called when a different size is clicked.
+*/
 void Maze::repeat(){
 	grid.clear();
 	edges.clear();
@@ -62,14 +48,16 @@ void Maze::repeat(){
 	adjMat.clear();
 	realAdjMat.clear();
 	pathway.clear();
-	blackWindow();//done
-	build_grid(); //done
-	adjMat_Builder(); //done
-	rand_prims(realAdjMat, realAdjMat.size()); //done
-	//gen_maze //done
+	blackWindow();
+	build_grid(); 
+	adjMat_Builder(); 
+	rand_prims(realAdjMat, realAdjMat.size());
+
 }
 
 
+
+//blackWindow Function makes the pixels where the maze is made black.
 void:: Maze::blackWindow(){
 	for(int i = 0; i < 1500; i++){
 		for(int j = 0; j < 1001; j++){
@@ -81,9 +69,12 @@ void:: Maze::blackWindow(){
 }
 
 
-int Maze::Sizebutton_builder(){
-	for(int i = 0; i < 200; i++){
 
+//creates the size button and exit button
+int Maze::Sizebutton_builder(){
+
+	//Makes the different maze size buttons in numberical order
+	for(int i = 0; i < 200; i++){
 		//5
 		for(int j = 0; j < 100; j++){
 			SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);		
@@ -116,17 +107,20 @@ int Maze::Sizebutton_builder(){
 	}
 
 	
+	//makes the exit button red
 	for(int j = 0; j < 100; j++){
 		//exit 
-		for(int i = 0; i < 140; i++){
+		for(int i = 0; i < 300; i++){
 			SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);		
 			SDL_RenderDrawPoint(renderer, i+1100, j+100);	
 		}
 	}
-	
 
+
+
+
+	//creates the number on the button to show what maze size is being selected
 	//5*5
-	
 	for(int i =0 ; i <50; i++){
 		for(int j =0; j<5; j++){
 			SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);		
@@ -174,6 +168,8 @@ int Maze::Sizebutton_builder(){
 
 	SDL_RenderPresent(renderer);
 
+
+	//waits for the next button clicked
 	bool notClicked = true;
 	while(notClicked){
 		if(SDL_PollEvent(&event) &&event.type == SDL_MOUSEBUTTONDOWN){
@@ -222,16 +218,7 @@ int Maze::Sizebutton_builder(){
 				}
 			}
 		}
-
 	}
-
-
-
-
-
-
-
-
 
 
 }
@@ -240,6 +227,7 @@ int Maze::Sizebutton_builder(){
 void Maze::build_grid() {
 	//makes the walls
 	for(int i =0; i <= 1000; i++){
+		cout << i<< endl;
 		vector<int> tmp;
 		for(int j = 0; j <= 1000; j++){
 			if (i % cell == 0 || j % cell == 0) {
@@ -261,10 +249,12 @@ void Maze::build_grid() {
 				SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);		//Set draw color to white
 				SDL_RenderDrawPoint(renderer, i, j);			
 			}
+			//start point
 			if(i < cell && j < cell && grid[i][j] !=1){
-				SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);		
+				SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);			//sets color to green
 				SDL_RenderDrawPoint(renderer, i, j);			
 			}
+			//end point
 			if(i > 1000-cell && j > 1000-cell && grid[i][j] !=1 && i < 1000 && j <1000){
 				SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);		//Set draw color to red
 				SDL_RenderDrawPoint(renderer, i, j);			
@@ -272,12 +262,16 @@ void Maze::build_grid() {
 
 			if(i % (cell/2) == 0 && j % (cell/2) == 0 && grid[i][j] != 1){
 				
-				pair<int, int> p(i,j);
+
+				//makes nodes  
+				pair<int, int> p(i,j);			//note: x,y are swapped, so i is y and j is x
 				edges.push_back(p);
+
+
+				//random number for 1-20 for weighted adjmat for prims
 			    std::random_device dev;
         		std::mt19937 rng(dev());
-        		std::uniform_int_distribution<std::mt19937::result_type> dist20(1,20); // distribution in range [0, 5]
-
+        		std::uniform_int_distribution<std::mt19937::result_type> dist20(1,20); // distribution in range [1,20]
 				tmp.push_back(dist20(rng));
 			}
 		}
@@ -292,10 +286,13 @@ void Maze::build_grid() {
 }
 
 
+
+
 void Maze::adjMat_Builder(){
 	int maxSize = adjMat.size()*adjMat.size();
 	
-
+	//makes the realAdjMat that would be size of maze by size of maze
+	//lets say we choose the 5 size maze than the realAdjMat would be 5*5
 	for(int i = 0; i < maxSize; i++){
 		vector<int> tmp; 
 		for(int j = 0; j < maxSize; j++){
@@ -330,6 +327,7 @@ void Maze::adjMat_Builder(){
 				}
 			}
 
+			//left
 			if((i+1)%adjMat.size() != 1){
 				if(j == i-1){
 					check =1;
@@ -349,6 +347,8 @@ void Maze::adjMat_Builder(){
 }
 
 
+
+//basic prims algorithm
 void Maze::rand_prims(vector<vector<int>> adj, int vert){
 	    //used to store the new graph with lowest weight
     int newGraph[vert];
@@ -397,6 +397,9 @@ void Maze::rand_prims(vector<vector<int>> adj, int vert){
 }
 
 
+
+
+/*makes the maze and the buttons for different solving algorithms*/
 int Maze::gen_maze(int mazeLayout[],int vert){
 	
 	for(int i =1; i < vert; i++){
@@ -471,10 +474,9 @@ int Maze::gen_maze(int mazeLayout[],int vert){
 		}
 
 	}
-
-
-
 	SDL_RenderPresent(renderer);
+	
+	//makes every number in the realAdjMat to 1 so it can be used in djikstra's algorithm
 	for(int i = 0; i < realAdjMat.size(); i++){
 		for(int j = 0; j < realAdjMat.size(); j++){
 			if(realAdjMat[i][j] != 50){
@@ -488,13 +490,14 @@ int Maze::gen_maze(int mazeLayout[],int vert){
 
 
 
-
+	//waits for next button clicked
 	bool notClicked = true;
 	while(notClicked){
 		int x,y;
 		
 		if(SDL_PollEvent(&event) &&event.type == SDL_MOUSEBUTTONDOWN){
 			SDL_GetMouseState(&x,&y);
+				
 				if(y >= 1050 && y <=1150 ){
 					if(x>50 &&x<250){
 						size = 50;
@@ -532,7 +535,7 @@ int Maze::gen_maze(int mazeLayout[],int vert){
 					}
 
 				}
-
+				
 				//exit
 				if(y >=100 && y <=200){
 					//exit
@@ -542,32 +545,37 @@ int Maze::gen_maze(int mazeLayout[],int vert){
 					return 0;
 					}
 				}
-
-				//BFS
+				
+				//BFS - not finished
 				if(y >=325 && y <= 425){
 					if(x>1100 && x<1400){
 						notClicked = false;
 						visited = vector<bool>(realAdjMat.size(), false);
-						BFS(0);
-						cout << pathway.size();
-						for(int k = pathway.size()-1; k > 0; k--){
+						int parent[realAdjMat.size()];
+						BFS(0, parent);
+						/*int reached_start = parent[realAdjMat.size()-1];
+						while(reached_start != -1){
 							for(int i = 0; i < cell; i++){
-								int a = edges[pathway[k]].second-(cell/2);
-								int b = edges[pathway[k]].first- (cell/2);
+								int a = edges[parent[reached_start]].second-(cell/2);
+								int b = edges[pathway[reached_start]].first- (cell/2);
 								for(int j = 0; j < cell; j++){
 									if(grid[i+a][j+b] != 1){
-										SDL_SetRenderDrawColor(renderer, 48, 255, 96, 255);		//Set draw color to white
+										SDL_SetRenderDrawColor(renderer, 48, 255, 96, 255);		//Set draw color to light green
 										SDL_RenderDrawPoint(renderer, i+a, j+b);
 									}
 								}
+								
 							}
+							reached_start = parent[reached_start];
 							SDL_RenderPresent(renderer);
 							usleep(5000000/(size));
 						}
 
+						usleep(500000);*/
+						//reminder: still need to set the way to the end point green
 					}
 				}
-
+				
 				//DFS
 				if(y >= 550 && y <= 650){
 					if(x>=1100 && x <=1400){
@@ -580,7 +588,7 @@ int Maze::gen_maze(int mazeLayout[],int vert){
 								int b = edges[pathway[k]].first- (cell/2);
 								for(int j = 0; j < cell; j++){
 									if(grid[i+a][j+b] != 1){
-										SDL_SetRenderDrawColor(renderer, 48, 255, 96, 255);		//Set draw color to white
+										SDL_SetRenderDrawColor(renderer, 48, 255, 96, 255);		//Set draw color to light green
 										SDL_RenderDrawPoint(renderer, i+a, j+b);
 									}
 								}
@@ -597,18 +605,19 @@ int Maze::gen_maze(int mazeLayout[],int vert){
 						}
 					}
 				}
+				
 			
 		}
 
 	}
-
+	
 
 }
 
-int Maze::BFS(int start){
+int Maze::BFS(int start, int parent[]){
 	vector<int> q;
     q.push_back(start);
-  
+	parent[0] = -1;
     // Set source as visited
     visited[start] = true;
     int vis;
@@ -621,7 +630,7 @@ int Maze::BFS(int start){
 		for(int i = 0; i < cell; i++){
 			for(int j = 0; j < cell; j++){
 				if(grid[i+a][j+b] != 1){
-					SDL_SetRenderDrawColor(renderer, 200, 200, 200, 255);		//Set draw color to white
+					SDL_SetRenderDrawColor(renderer, 200, 200, 200, 255);		//Set draw color to gray
 					SDL_RenderDrawPoint(renderer, i+a, j+b);
 				}
 			}
@@ -629,8 +638,6 @@ int Maze::BFS(int start){
 		SDL_RenderPresent(renderer);
 		usleep(5000000/(10*size));
 
-        // Print the current node
-        //cout << vis << " ";
         q.erase(q.begin());
   
         // For every adjacent vertex to the current vertex
@@ -642,7 +649,7 @@ int Maze::BFS(int start){
 				}
                 // Push the adjacent node to the queue
                 q.push_back(i);
-  
+				parent[i] = vis;
                 // Set
                 visited[i] = true;
             }
@@ -651,9 +658,9 @@ int Maze::BFS(int start){
 }
 
 int Maze::DFS(int start){
-	// Print the current node
+
 	int check = 0;
-    //cout << start << " " << endl;
+
 	int a = edges[start].second;
 	int b = edges[start].first;
 	a = a-(cell/2);
@@ -673,7 +680,7 @@ int Maze::DFS(int start){
 	for(int i = 0; i < cell; i++){
 		for(int j = 0; j < cell; j++){
 			if(grid[i+a][j+b] != 1){
-				SDL_SetRenderDrawColor(renderer, 200, 200, 200, 255);		//Set draw color to white
+				SDL_SetRenderDrawColor(renderer, 200, 200, 200, 255);		//Set draw color to gray
 				SDL_RenderDrawPoint(renderer, i+a, j+b);
 			}
 		}
@@ -756,23 +763,9 @@ int Maze::DFS_decide(){
 					if(x>1100 && x<1400){
 						notClicked = false;
 						visited = vector<bool>(realAdjMat.size(), false);
-						BFS(0);
-						cout << pathway.size();
-						for(int k = pathway.size()-1; k > 0; k--){
-							for(int i = 0; i < cell; i++){
-								int a = edges[pathway[k]].second-(cell/2);
-								int b = edges[pathway[k]].first- (cell/2);
-								for(int j = 0; j < cell; j++){
-									if(grid[i+a][j+b] != 1){
-										SDL_SetRenderDrawColor(renderer, 48, 255, 96, 255);		//Set draw color to white
-										SDL_RenderDrawPoint(renderer, i+a, j+b);
-									}
-								}
-							}
-							SDL_RenderPresent(renderer);
-							usleep(5000000/(size));
-						}
-
+						int parent[realAdjMat.size()];
+						BFS(0,parent);
+						
 					}
 				}
 
@@ -782,14 +775,14 @@ int Maze::DFS_decide(){
 						for(int i = 0; i< 1001; i++){
 							for(int j = 0; j < 1001; j++){
 								if(grid[i][j] != 1){
-										SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);		//Set draw color to white
+										SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);		//Set draw color to black
 										SDL_RenderDrawPoint(renderer, i, j);
 										if(i>0 && i < cell && j> 0 && j < cell){
-											SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);		//Set draw color to white
+											SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);		//Set draw color to green
 											SDL_RenderDrawPoint(renderer, i, j);
 										}
 										if(i>1001-cell && i < 1001 && j> 1001-cell && j < 1001){
-											SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);		//Set draw color to white
+											SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);		//Set draw color to red
 											SDL_RenderDrawPoint(renderer, i, j);
 										}
 										
