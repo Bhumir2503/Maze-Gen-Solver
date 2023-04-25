@@ -61,30 +61,33 @@ void Maze::repeat(){
 	rand_prims(realAdjMat, realAdjMat.size());
 
 }
-
+//prints text, called after making each button
 void Maze::text(string textureText){
+	//font variable, openfont(file, font_size)
 	TTF_Font * ourFont;
-	ourFont = TTF_OpenFont("font/8bitOperatorPlus8-Regular.ttf", 64);
-	
+	ourFont = TTF_OpenFont("font/Montserrat-Regular.ttf", 64);
+	//error check
 	if(ourFont == nullptr){
 		cout << "no font load :( \n";
 		exit(1);
 	}
 	
 
-
+    //make text a surface then convert the surface to a texture, renderText(font, c_string, color)
 	SDL_Surface * surface = TTF_RenderText_Solid (ourFont, textureText.c_str(), { 255, 255, 255 });
 	if(surface == nullptr){
 		cout << "pain  " << TTF_GetError() << "\n";
 	}
 	SDL_Texture * texture;
+	//convert surface to texture
 	texture = SDL_CreateTextureFromSurface(renderer, surface);
-	
+	//make a rectangle to hold text
+	//each else if statement is for different printing 
 	SDL_Rect rectangle;
 	if(textureText == "5 x 5"){
-		rectangle.x = 1625;
+		rectangle.x = 1650;
 		rectangle.y = 250;
-		rectangle.w = 150;
+		rectangle.w = 100;
 		rectangle.h = 50;
 	}
 	else if(textureText == "10 x 10"){
@@ -109,19 +112,19 @@ void Maze::text(string textureText){
 		rectangle.h = 50;
 	}
 	else if(textureText == "Quit"){
-		rectangle.x = 1375;
+		rectangle.x = 1400;
 		rectangle.y = 75;
-		rectangle.w = 150;
+		rectangle.w = 100;
 		rectangle.h = 50;
 	}else if(textureText == "BFS"){
-		rectangle.x = 1175;
+		rectangle.x = 1200;
 		rectangle.y = 325;
-		rectangle.w = 150;
+		rectangle.w = 100;
 		rectangle.h = 50;
 	}else if(textureText == "DFS"){
-		rectangle.x = 1175;
+		rectangle.x = 1200;
 		rectangle.y = 575;
-		rectangle.w = 150;
+		rectangle.w = 100;
 		rectangle.h = 50;
 	}else if(textureText == "Djikstra's"){
 		rectangle.x = 1150;
