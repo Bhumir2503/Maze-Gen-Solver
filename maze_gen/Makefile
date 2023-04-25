@@ -1,5 +1,5 @@
 #OBJS specifies which files to compile
-OBJS = maze.cpp cell.cpp main.cpp
+OBJS = maze.cpp main.cpp
 
 #CC specifies which compiler to use
 CC = g++
@@ -9,7 +9,7 @@ CC = g++
 COMPILER_FLAGS = -w
 
 #LINKER_FLAGS specifies which libraries need to be linked
-LINKER_FLAGS = -lSDL2
+LINKER_FLAGS = -lSDL2 -lSDL2_ttf
 
 #OBJ_NAME specifies the name of the executable
 OBJ_NAME = maze

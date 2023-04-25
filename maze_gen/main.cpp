@@ -1,9 +1,11 @@
 #include "maze.h"
+#include <iostream>
+
+using namespace std;
 
 
-int main() {
+int main(int argc, char* argv[]) {
 	Maze m;
-	
 
-	return EXIT_SUCCESS;
+	return 0;
 }
