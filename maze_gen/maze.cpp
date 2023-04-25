@@ -61,7 +61,7 @@ void Maze::repeat(){
 
 //blackWindow Function makes the pixels where the maze is made black.
 void:: Maze::blackWindow(){
-	for(int i = 0; i < 1920; i++){
+	for(int i = 0; i < 1050; i++){
 		for(int j = 0; j < 1080; j++){
 			SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);		
 			SDL_RenderDrawPoint(renderer, i, j);			
@@ -76,35 +76,35 @@ void:: Maze::blackWindow(){
 int Maze::Sizebutton_builder(){
 
 	//Makes the different maze size buttons in numerical order
-	for(int i = 0; i < 200; i++){
+	for(int i = 0; i < 300; i++){
 		//5
 		for(int j = 0; j < 100; j++){
-			SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);		
-			SDL_RenderDrawPoint(renderer, i+1600, j+225);			
+			SDL_SetRenderDrawColor(renderer, 102, 51, 153, 255);		
+			SDL_RenderDrawPoint(renderer, i+1550, j+225);			
 		}
 
 		//10
 		for(int j = 0; j < 100; j++){
-			SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);		
-			SDL_RenderDrawPoint(renderer, i+1600, j+350);			
+			SDL_SetRenderDrawColor(renderer, 102, 51, 153, 255);	
+			SDL_RenderDrawPoint(renderer, i+1550, j+400);			
 		}
 
 		//25
 		for(int j = 0; j < 100; j++){
-			SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);		
-			SDL_RenderDrawPoint(renderer, i+1600, j+475);			
+			SDL_SetRenderDrawColor(renderer, 102, 51, 153, 255);		
+			SDL_RenderDrawPoint(renderer, i+1550, j+575);			
 		}
 
 		//50
 		for(int j = 0; j < 100; j++){
-			SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);		
-			SDL_RenderDrawPoint(renderer, i+1600, j+600);			
+			SDL_SetRenderDrawColor(renderer, 102, 51, 153, 255);		
+			SDL_RenderDrawPoint(renderer, i+1550, j+750);			
 		}
 
 		//100
 		for(int j = 0; j < 100; j++){
-			SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);		
-			SDL_RenderDrawPoint(renderer, i+1600, j+725);			
+			SDL_SetRenderDrawColor(renderer, 102, 51, 153, 255);	
+			SDL_RenderDrawPoint(renderer, i+1550, j+925);			
 		}
 	}
 
@@ -112,9 +112,9 @@ int Maze::Sizebutton_builder(){
 	//makes the exit button red
 	for(int i = 0; i < 100; i++){
 		//exit 
-		for(int j = 0; j < 200; j++){
+		for(int j = 0; j < 460; j++){
 			SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);		
-			SDL_RenderDrawPoint(renderer, j+1600, i+100);	
+			SDL_RenderDrawPoint(renderer, j+1230, i+50);	
 		}
 	}
 
@@ -128,39 +128,41 @@ int Maze::Sizebutton_builder(){
 			if(event.button.button == SDL_BUTTON_LEFT ){
 				int x,y;
 				SDL_GetMouseState(&x,&y);
-				if(x >= 1600 && x <= 1800){
+				if(x >= 1550 && x <= 1850){
 					if(y > 225 && y < 325){
 						size = 50;
 						cell = 1000/(size/10);
 						notClicked = false;
 					}
 
-					if(y > 350 && y < 450){
+					if(y > 400 && y < 500){
 						size = 100;
 						cell = 1000/(size/10);
 						notClicked = false;
 					}
 
-					if(y > 475 && y < 575){
+					if(y > 575 && y < 675){
 						size = 200;
 						cell = 1000/(size/10);
 						notClicked = false;
 					}
 
-					if(y > 600 && y < 700){
+					if(y > 750 && y < 850){
 						size = 500;
 						cell = 1000/(size/10);
 						notClicked = false;
 					}
 
-					if(y > 725 && y < 825){
+					if(y > 925 && y < 1025){
 						size = 1000;
 						cell = 1000/(size/10);
 						notClicked = false;
 					}
 				
-					//exit
-					if(y > 100 && y < 200){
+				}
+
+				if(x>=1230 && x<=1690){
+					if(y > 50 && y < 150){
 						notClicked = false;
 						quit = true;
 						return 0;
@@ -397,17 +399,11 @@ int Maze::gen_maze(int mazeLayout[],int vert){
 	}
 
 	for(int j = 0; j < 100; j++){
-		//exit
-		for(int i = 0; i < 300; i++){
-			SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);		
-			SDL_RenderDrawPoint(renderer, i+1100, j+100);			
-	
-		}
 
 		//BFS
 		for(int i =0; i < 300; i++){
 			SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);		
-			SDL_RenderDrawPoint(renderer, i+1100, j+325);			
+			SDL_RenderDrawPoint(renderer, i+1100, j+300);			
 		}
 
 		//DFS
@@ -419,7 +415,7 @@ int Maze::gen_maze(int mazeLayout[],int vert){
 		//Djikstra's
 		for(int i =0; i < 300; i++){
 			SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);		
-			SDL_RenderDrawPoint(renderer, i+1100, j+775);			
+			SDL_RenderDrawPoint(renderer, i+1100, j+800);			
 		}
 
 	}
@@ -447,54 +443,52 @@ int Maze::gen_maze(int mazeLayout[],int vert){
 		if(SDL_PollEvent(&event) &&event.type == SDL_MOUSEBUTTONDOWN){
 			SDL_GetMouseState(&x,&y);
 				
-				if(y >= 800 && y <= 900){
-					if(x>50 &&x<250){
+				if(x >= 1550 && x <= 1850){
+					if(y > 225 && y < 325){
 						size = 50;
 						cell = 1000/(size/10);
 						notClicked = false;
 						repeat();
 					}
 
-					if(x>350 &&x<550){
+					if(y > 400 && y < 500){
 						size = 100;
 						cell = 1000/(size/10);
 						notClicked = false;
 						repeat();
 					}
 
-					if(x>650 &&x<850){
-						size = 250;
+					if(y > 575 && y < 675){
+						size = 200;
 						cell = 1000/(size/10);
 						notClicked = false;
 						repeat();
 					}
 
-					if(x>950 &&x<1150){
-						size =500;
+					if(y > 750 && y < 850){
+						size = 500;
 						cell = 1000/(size/10);
 						notClicked = false;
 						repeat();
 					}
 
-					if(x>1250 &&x<1450){
+					if(y > 925 && y < 1025){
 						size = 1000;
 						cell = 1000/(size/10);
 						notClicked = false;
 						repeat();
 					}
-
-				}
 				
-				//exit
-				if(y >=100 && y <=200){
-					//exit
-					if(x>=1100 && x<= 1400){
-					notClicked = false;
-					quit = true;
-					return 0;
+				}
+
+				if(x>=1230 && x<=1690){
+					if(y > 50 && y < 150){
+						notClicked = false;
+						quit = true;
+						return 0;
 					}
 				}
-				
+
 				//BFS - not finished
 				if(y >=325 && y <= 425){
 					if(x>1100 && x<1400){
@@ -656,49 +650,49 @@ int Maze::DFS_decide(){
 		
 		if(SDL_PollEvent(&event) &&event.type == SDL_MOUSEBUTTONDOWN){
 			SDL_GetMouseState(&x,&y);
-				if(y >= 1050 && y <=1150 ){
-					if(x>50 &&x<250){
+				if(x >= 1550 && x <= 1850){
+					if(y > 225 && y < 325){
 						size = 50;
 						cell = 1000/(size/10);
 						notClicked = false;
 						repeat();
 					}
 
-					if(x>350 &&x<550){
+					if(y > 400 && y < 500){
 						size = 100;
 						cell = 1000/(size/10);
 						notClicked = false;
 						repeat();
 					}
 
-					if(x>650 &&x<850){
-						size = 250;
+					if(y > 575 && y < 675){
+						size = 200;
 						cell = 1000/(size/10);
 						notClicked = false;
 						repeat();
 					}
 
-					if(x>950 &&x<1150){
-						size =500;
+					if(y > 750 && y < 850){
+						size = 500;
 						cell = 1000/(size/10);
 						notClicked = false;
 						repeat();
 					}
 
-					if(x>1250 &&x<1450){
+					if(y > 925 && y < 1025){
 						size = 1000;
 						cell = 1000/(size/10);
 						notClicked = false;
 						repeat();
 					}
-
+				
 				}
-				if(y >=100 && y <=200){
-					//exit
-					if(x>=1100 && x<= 14000){
-					notClicked = false;
-					quit = true;
-					return -1;
+
+				if(x>=1230 && x<=1690){
+					if(y > 50 && y < 150){
+						notClicked = false;
+						quit = true;
+						return 0;
 					}
 				}
 
