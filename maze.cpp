@@ -393,7 +393,7 @@ void Maze::adjMat_Builder(){
 //basic prims algorithm
 void Maze::rand_prims(vector<vector<int>> adj, int vert){
 	    //used to store the new graph with lowest weight
-    int newGraph[vert];
+    vector<int> newGraph(vert,0);
     
     int key[vert];
     
@@ -442,7 +442,7 @@ void Maze::rand_prims(vector<vector<int>> adj, int vert){
 
 
 /*makes the maze and the buttons for different solving algorithms*/
-int Maze::gen_maze(int mazeLayout[],int vert){
+int Maze::gen_maze(vector<int> mazeLayout,int vert){
 	string bfs = "BFS";
 	string dfs = "DFS";
 	string djikstras = "Djikstra's";

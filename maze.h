@@ -16,7 +16,7 @@ class Maze {
 		void build_grid();	//Builds the initial grid before maze construction
 		void adjMat_Builder();
 		void rand_prims(std::vector<std::vector<int>>, int);
-		int gen_maze(int[], int);
+		int gen_maze(vector<int>, int);
 		int BFS(int, int[]);
 		int BFS_decide();
 		int DFS(int);
