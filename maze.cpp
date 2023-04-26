@@ -436,6 +436,7 @@ void Maze::rand_prims(vector<vector<int>> adj, int vert){
 
 
 	gen_maze(newGraph, vert);
+	newGraph.clear();
 }
 
 
@@ -489,6 +490,7 @@ int Maze::gen_maze(vector<int> mazeLayout,int vert){
 			SDL_RenderPresent(renderer);
 			usleep(5000000/(10*size));
 		}
+
 	}
 
 	for(int j = 0; j < 100; j++){
