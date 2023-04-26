@@ -21,7 +21,7 @@ class Maze {
 		int BFS_decide();
 		int DFS(int);
 		int DFS_decide();
-		void decide();
+		int decide();
 		void reset();
 		void text(string textureText);
 	private:
