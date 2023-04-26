@@ -472,8 +472,6 @@ int Maze::gen_maze(vector<int> mazeLayout,int vert){
 				grid[j][k] = 0;			
 				k++;
 			}
-			SDL_RenderPresent(renderer);
-			usleep(5000000/(10*size));
 		}
 
 		//up and down
@@ -487,11 +485,11 @@ int Maze::gen_maze(vector<int> mazeLayout,int vert){
 				grid[j][k] =0;
 				j++;
 			}
-			SDL_RenderPresent(renderer);
-			usleep(5000000/(10*size));
 		}
 
 	}
+				SDL_RenderPresent(renderer);
+			usleep(5000000/(10*size));
 
 	for(int j = 0; j < 100; j++){
 
