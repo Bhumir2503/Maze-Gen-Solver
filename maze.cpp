@@ -311,9 +311,9 @@ void Maze::build_grid() {
 
 
 				//random number for 1-20 for weighted adjmat for prims
-			  std::random_device dev;
-        std::mt19937 rng(dev());
-        std::uniform_int_distribution<std::mt19937::result_type> dist20(1,20); // distribution in range [1,20]
+			  	std::random_device dev;
+        		std::mt19937 rng(dev());
+        		std::uniform_int_distribution<std::mt19937::result_type> dist20(1,20); // distribution in range [1,20]
 				tmp.push_back(dist20(rng));
 			}
 		}
@@ -334,7 +334,7 @@ void Maze::adjMat_Builder(){
 	int maxSize = adjMat.size()*adjMat.size();
 	
 	//makes the realAdjMat that would be size of maze by size of maze
-	//lets say we choose the 5 size maze than the realAdjMat would be 5*5
+	//lets say we choose the 5 size maze than the realAdjMat would be 25*25
 	for(int i = 0; i < maxSize; i++){
 		vector<int> tmp; 
 		for(int j = 0; j < maxSize; j++){
@@ -383,6 +383,10 @@ void Maze::adjMat_Builder(){
 				tmp.push_back(1000);
 			}
 		}
+		for(int m = 0; m < tmp.size(); m++){
+			cout << tmp[m] << " ";
+		}
+		cout << endl;
 		realAdjMat.push_back(tmp);
 		
 	}
@@ -526,9 +530,14 @@ int Maze::gen_maze(vector<int> mazeLayout,int vert){
 				realAdjMat[i][j] = 0;
 			}
 			else{
-				realAdjMat[i][j] =1;
+				int index = i+j;
+				int row = i/adjMat.size();
+				int col = j%adjMat.size();
+				realAdjMat[i][j] =adjMat[row][col];
 			}
+			cout << realAdjMat[i][j] << " ";
 		}
+		cout << endl;
 	}
 
 
@@ -829,7 +838,8 @@ bool notClicked = true;
 
 int Maze::BFS(int start, int parent[]){
 	vector<int> q;
-    q.push_back(start);
+    q.push_back(start); 
+	 
 	pathway[0] = -1;
     // Set source as visited
     visited[start] = true;
