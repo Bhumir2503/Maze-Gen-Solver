@@ -18,9 +18,8 @@ class Maze {
 		void rand_prims(std::vector<std::vector<int>>, int);
 		int gen_maze(vector<int>, int);
 		int BFS(int, int[]);
-		int BFS_decide();
 		int DFS(int);
-		int DFS_decide();
+		int Dijkstra(vector<vector<int> > adjacencyMatrix,int startVertex);
 		int decide();
 		void reset();
 		void text(string textureText);
