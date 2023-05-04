@@ -838,6 +838,20 @@ void printPath(int currentVertex, vector<int> parents)
     }
     printPath(parents[currentVertex], parents);
     cout << currentVertex << " ";
+    if(currentVertex != 0 || currentVertex != realAdjMat.size()-1);
+    int a = edges[currentVertex].second-(cell/2);
+    int b = edges[currentVertex].first- (cell/2);
+    for(int i = 0; i < cell; i++){
+    for(int j = 0; j < cell; j++){
+	if(grid[i+a][j+b] != 1){
+		SDL_SetRenderDrawColor(renderer, 48, 255, 96, 255);		//Set draw color to light green
+		SDL_RenderDrawPoint(renderer, i+a, j+b);
+	}
+    }
+	    
+    }
+	SDL_RenderPresent(renderer);
+	usleep(5000000/(size));
 }
 
 int Maze::Dijkstra(vector<vector<int> > adjacencyMatrix,int startVertex){
@@ -911,6 +925,8 @@ int Maze::Dijkstra(vector<vector<int> > adjacencyMatrix,int startVertex){
             if (edgeDistance > 0
                 && ((shortestDistance + edgeDistance)
                     < shortestDistances[vertexIndex])) {
+		    
+		    //color goes here;
                 parents[vertexIndex] = nearestVertex;
                 shortestDistances[vertexIndex]
                     = shortestDistance + edgeDistance;
