@@ -19,7 +19,8 @@ class Maze {
 		int gen_maze(vector<int>, int);
 		int BFS(int, int[]);
 		int DFS(int);
-		int Dijkstra(vector<vector<int> > adjacencyMatrix,int startVertex);
+		int Dijkstra();
+		void printPath(int currentVertex, vector<int> parents);
 		int decide();
 		void reset();
 		void text(string textureText);
