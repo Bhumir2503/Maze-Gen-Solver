@@ -17,13 +17,14 @@ class Maze {
 		void adjMat_Builder();
 		void rand_prims(std::vector<std::vector<int>>, int);
 		int gen_maze(vector<int>, int);
-		int BFS(int, int[]);
+		int BFS(int);
+		int BFS_decide();
 		int DFS(int);
-		int Dijkstra();
-		void printPath(int currentVertex, vector<int> parents);
+		int DFS_decide();
 		int decide();
 		void reset();
 		void text(string textureText);
+		int randomPath(int);
 	private:
 		//adjList represents the connected graph of each cell in the grid. This graph is used to 
 		//construct a MST that determines the layout of the final maze

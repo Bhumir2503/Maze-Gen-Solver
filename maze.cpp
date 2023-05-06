@@ -2,14 +2,18 @@
 #include <SDL2/SDL_ttf.h>
 #include <iostream>
 #include <cstdlib>
+#include <ctime>
 #include <unistd.h>
 #include <random>
 #include <string>
-#include <queue>
-#include <bits/stdc++.h>
 //#include <dos.h>
+
 using namespace std;
+
+
 Maze::Maze() {
+	srand(time(NULL));
+
 	//Open SDL
 	SDL_Init(SDL_INIT_VIDEO);
 	TTF_Init();
@@ -21,18 +25,28 @@ Maze::Maze() {
 	SDL_RenderClear(renderer);	
 	
 	
+
+
 	
 	Sizebutton_builder();								//makes the graph size button(blue) and exit button(red)
 	build_grid(); //done								//builds a grid
 	adjMat_Builder(); //done							//makes an adjMat matrix that would be used in prims
 	rand_prims(realAdjMat, realAdjMat.size());			//creates a maze using prims algorithm
+
+
 	
+
 	//Upon quit, clean up SDL resources
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);
 	TTF_Quit();
 	SDL_Quit();
 }
+
+
+
+
+
 /*
 repeat funtion that clears every vector and start a new maze
 This function is called when a different size is clicked.
@@ -48,6 +62,7 @@ void Maze::repeat(){
 	build_grid(); 
 	adjMat_Builder(); 
 	rand_prims(realAdjMat, realAdjMat.size());
+
 }
 //prints text, called after making each button
 void Maze::text(string textureText){
@@ -60,6 +75,7 @@ void Maze::text(string textureText){
 		exit(1);
 	}
 	
+
     //make text a surface then convert the surface to a texture, renderText(font, c_string, color)
 	SDL_Surface * surface = TTF_RenderText_Solid (ourFont, textureText.c_str(), { 255, 255, 255 });
 	if(surface == nullptr){
@@ -120,12 +136,14 @@ void Maze::text(string textureText){
 		rectangle.h = 50;
 	}
    
+
 	//while(!quit){
 	SDL_RenderCopy(renderer, texture, NULL, &rectangle);
     SDL_RenderPresent(renderer);
 	//}
 	SDL_FreeSurface(surface);
 }
+
 //blackWindow Function makes the pixels where the maze is made black.
 void:: Maze::blackWindow(){
 	for(int i = 0; i < 1050; i++){
@@ -136,6 +154,9 @@ void:: Maze::blackWindow(){
 	}
 	SDL_RenderPresent(renderer);
 }
+
+
+
 //creates the size button and exit button
 int Maze::Sizebutton_builder(){
 	string five = "5 x 5"; // y = 1100 | x = 150
@@ -151,21 +172,25 @@ int Maze::Sizebutton_builder(){
 			SDL_SetRenderDrawColor(renderer, 102, 51, 153, 255);		
 			SDL_RenderDrawPoint(renderer, i+1550, j+225);			
 		}
+
 		//10
 		for(int j = 0; j < 100; j++){
 			SDL_SetRenderDrawColor(renderer, 102, 51, 153, 255);	
 			SDL_RenderDrawPoint(renderer, i+1550, j+400);			
 		}
+
 		//25
 		for(int j = 0; j < 100; j++){
 			SDL_SetRenderDrawColor(renderer, 102, 51, 153, 255);		
 			SDL_RenderDrawPoint(renderer, i+1550, j+575);			
 		}
+
 		//50
 		for(int j = 0; j < 100; j++){
 			SDL_SetRenderDrawColor(renderer, 102, 51, 153, 255);		
 			SDL_RenderDrawPoint(renderer, i+1550, j+750);			
 		}
+
 		//100
 		for(int j = 0; j < 100; j++){
 			SDL_SetRenderDrawColor(renderer, 102, 51, 153, 255);	
@@ -188,6 +213,8 @@ int Maze::Sizebutton_builder(){
 	}
 	text(quit);
 	SDL_RenderPresent(renderer);
+
+
 	//waits for the next button clicked
 	bool notClicked = true;
 	while(notClicked){
@@ -201,21 +228,25 @@ int Maze::Sizebutton_builder(){
 						cell = 1000/(size/10);
 						notClicked = false;
 					}
+
 					if(y > 400 && y < 500){
 						size = 100;
 						cell = 1000/(size/10);
 						notClicked = false;
 					}
+
 					if(y > 575 && y < 675){
 						size = 200;
 						cell = 1000/(size/10);
 						notClicked = false;
 					}
+
 					if(y > 750 && y < 850){
 						size = 500;
 						cell = 1000/(size/10);
 						notClicked = false;
 					}
+
 					if(y > 925 && y < 1025){
 						size = 1000;
 						cell = 1000/(size/10);
@@ -223,6 +254,7 @@ int Maze::Sizebutton_builder(){
 					}
 				
 				}
+
 				if(x>=1230 && x<=1690){
 					if(y > 50 && y < 150){
 						notClicked = false;
@@ -233,7 +265,11 @@ int Maze::Sizebutton_builder(){
 			}
 		}
 	}
+
+
 }
+
+
 void Maze::build_grid() {
 	//makes the walls
 	for(int i =0; i <= 1000; i++){
@@ -249,6 +285,7 @@ void Maze::build_grid() {
 		grid.push_back(tmp);
 	}
 	
+
 	//draws the grid and makes adjMatrix
 	for (int i = 0; i < grid.size() ; ++i) {
 		vector<int> tmp;
@@ -267,11 +304,15 @@ void Maze::build_grid() {
 				SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);		//Set draw color to red
 				SDL_RenderDrawPoint(renderer, i, j);			
 			}
+
 			if(i % (cell/2) == 0 && j % (cell/2) == 0 && grid[i][j] != 1){
 				
+
 				//makes nodes  
 				pair<int, int> p(i,j);			//note: x,y are swapped, so i is y and j is x
 				edges.push_back(p);
+
+
 				//random number for 1-20 for weighted adjmat for prims
 			  std::random_device dev;
         std::mt19937 rng(dev());
@@ -283,8 +324,15 @@ void Maze::build_grid() {
 			adjMat.push_back(tmp);
 		}
 	}
+
+
 	SDL_RenderPresent(renderer);		//Show updated render
+
 }
+
+
+
+
 void Maze::adjMat_Builder(){
 	int maxSize = adjMat.size()*adjMat.size();
 	
@@ -313,6 +361,7 @@ void Maze::adjMat_Builder(){
 					tmp.push_back(adjMat[row][col]);
 				}
 			}
+
 			//right
 			if((i+1)%adjMat.size() != 0){
 				if(j == i+1){
@@ -322,6 +371,7 @@ void Maze::adjMat_Builder(){
 					tmp.push_back(adjMat[row][col]);
 				}
 			}
+
 			//left
 			if((i+1)%adjMat.size() != 1){
 				if(j == i-1){
@@ -331,6 +381,7 @@ void Maze::adjMat_Builder(){
 					tmp.push_back(adjMat[row][col]);
 				}
 			}
+
 			if(check ==0){
 				tmp.push_back(1000);
 			}
@@ -339,6 +390,9 @@ void Maze::adjMat_Builder(){
 		
 	}
 }
+
+
+
 //basic prims algorithm
 void Maze::rand_prims(vector<vector<int>> adj, int vert){
 	    //used to store the new graph with lowest weight
@@ -352,9 +406,12 @@ void Maze::rand_prims(vector<vector<int>> adj, int vert){
         key[i] = 99999, setChecker[i] = false;
     }
  
+
     key[0] = 0;
    
+
     newGraph[0] = -1;
+
     for (int count = 0; count < vert - 1; count++) {
          
      
@@ -369,17 +426,25 @@ void Maze::rand_prims(vector<vector<int>> adj, int vert){
         }
         
         setChecker[index] = true;
+
         for (int w = 0; w < vert; w++){
  
             if (adj[index][w] && setChecker[w] == false && adj[index][w] < key[w]){
                 newGraph[w] = index;
                 key[w] = adj[index][w];
             }
+
 		}
     }
+
+
 	gen_maze(newGraph, vert);
 	newGraph.clear();
 }
+
+
+
+
 /*makes the maze and the buttons for different solving algorithms*/
 int Maze::gen_maze(vector<int> mazeLayout,int vert){
 	string bfs = "BFS";
@@ -388,16 +453,20 @@ int Maze::gen_maze(vector<int> mazeLayout,int vert){
 	for(int i =1; i < vert; i++){
 		int a = i;
 		int b = mazeLayout[i];
+
 		realAdjMat[a][b] =50;
 		realAdjMat[b][a] = 50;
+
 		if(a > b){
 			int tmp = b;
 			b = a;
 			a = tmp;
 		}
+
 		
 		//right and left
 		if(a+1 == b){
+
 			int j = edges[a].second+(cell/2);
 			int k = edges[a].first-(cell/2)+1;
 			for(int l = 0; l < (cell-1); l++){
@@ -406,22 +475,19 @@ int Maze::gen_maze(vector<int> mazeLayout,int vert){
 				grid[j][k] = 0;			
 				k++;
 			}
-			SDL_RenderPresent(renderer);
-			usleep(5000000/(10*size));
 		}
 
 		//up and down
 		else if(a+(size/10) == b){
 			int j = edges[a].second-(cell/2)+1;
 			int k = edges[a].first+(cell/2);
+
 			for(int l =0; l < (cell-1); l++){
 				SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);		
 				SDL_RenderDrawPoint(renderer, j, k);			
 				grid[j][k] =0;
 				j++;
 			}
-			SDL_RenderPresent(renderer);
-			usleep(5000000/(10*size));
 		}
 
 	}
@@ -435,6 +501,7 @@ int Maze::gen_maze(vector<int> mazeLayout,int vert){
 			SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);		
 			SDL_RenderDrawPoint(renderer, i+1100, j+300);			
 		}
+
 		//DFS
 		for(int i =0; i < 300; i++){
 			SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);		
@@ -446,11 +513,13 @@ int Maze::gen_maze(vector<int> mazeLayout,int vert){
 			SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);		
 			SDL_RenderDrawPoint(renderer, i+1100, j+800);			
 		}
+
 	}
 	text(bfs);
 	text(dfs);
 	text(djikstras);
 	
+
 	SDL_RenderPresent(renderer);
 	
 	//makes every number in the realAdjMat to 1 so it can be used in djikstra's algorithm
@@ -464,6 +533,9 @@ int Maze::gen_maze(vector<int> mazeLayout,int vert){
 			}
 		}
 	}
+
+
+
 	//waits for next button clicked
 	bool notClicked = true;
 	while(notClicked){
@@ -479,24 +551,28 @@ int Maze::gen_maze(vector<int> mazeLayout,int vert){
 						notClicked = false;
 						repeat();
 					}
+
 					if(y > 400 && y < 500){
 						size = 100;
 						cell = 1000/(size/10);
 						notClicked = false;
 						repeat();
 					}
+
 					if(y > 575 && y < 675){
 						size = 200;
 						cell = 1000/(size/10);
 						notClicked = false;
 						repeat();
 					}
+
 					if(y > 750 && y < 850){
 						size = 500;
 						cell = 1000/(size/10);
 						notClicked = false;
 						repeat();
 					}
+
 					if(y > 925 && y < 1025){
 						size = 1000;
 						cell = 1000/(size/10);
@@ -505,6 +581,7 @@ int Maze::gen_maze(vector<int> mazeLayout,int vert){
 					}
 				
 				}
+
 				if(x>=1230 && x<=1690){
 					if(y > 50 && y < 150){
 						notClicked = false;
@@ -512,6 +589,7 @@ int Maze::gen_maze(vector<int> mazeLayout,int vert){
 						return 0;
 					}
 				}
+
 				//BFS 
 				if(y >=325 && y <= 425){
 					if(x>1100 && x<1400){
@@ -521,7 +599,24 @@ int Maze::gen_maze(vector<int> mazeLayout,int vert){
 						for(int i = 0; i < realAdjMat.size(); i++){
 							pathway.push_back(-1);
 						}
-						BFS(0, parent);
+						BFS(0);
+						int endpoint = pathway[realAdjMat.size()-1];
+						while(endpoint != 0){
+							for(int i = 0; i < cell; i++){
+								int a = edges[pathway[endpoint]].second-(cell/2);
+								int b = edges[pathway[endpoint]].first- (cell/2);
+								for(int j = 0; j < cell; j++){
+									if(grid[i+a][j+b] != 1){
+										SDL_SetRenderDrawColor(renderer, 48, 255, 96, 255);		//Set draw color to light green
+										SDL_RenderDrawPoint(renderer, i+a, j+b);
+									}
+								}
+								
+							}
+							endpoint = pathway[endpoint];
+							SDL_RenderPresent(renderer);
+							usleep(5000000/(size));
+						}
 						
 						pathway.clear();
 						int checker = decide();
@@ -560,14 +655,29 @@ int Maze::gen_maze(vector<int> mazeLayout,int vert){
 							quit = true;
 							return 0;
 						}
-						
 					}
 				}
 
 				if(y >= 800 && y <= 900){
 					if(x>=1100 && x <=1400){
-						Dijkstra();
 						notClicked = false;
+						visited = vector<bool>(realAdjMat.size(), false);
+						DFS(0);
+						for(int k = pathway.size()-1; k > 0; k--){
+							for(int i = 0; i < cell; i++){
+								int a = edges[pathway[k]].second-(cell/2);
+								int b = edges[pathway[k]].first- (cell/2);
+								for(int j = 0; j < cell; j++){
+									if(grid[i+a][j+b] != 1){
+										SDL_SetRenderDrawColor(renderer, 48, 255, 96, 255);		//Set draw color to light green
+										SDL_RenderDrawPoint(renderer, i+a, j+b);
+									}
+								}
+							}
+							SDL_RenderPresent(renderer);
+							usleep(5000000/(size));
+						}
+						pathway.clear();
 						int checker = decide();
 						if(checker == -1){
 							notClicked = false;
@@ -576,11 +686,17 @@ int Maze::gen_maze(vector<int> mazeLayout,int vert){
 						}
 					}
 				}
+				
 			
 		}
+
 	}
 	
+
 }
+
+
+
 int Maze::decide(){
 bool notClicked = true;
 	while(notClicked){
@@ -595,24 +711,28 @@ bool notClicked = true;
 						notClicked = false;
 						repeat();
 					}
+
 					if(y > 400 && y < 500){
 						size = 100;
 						cell = 1000/(size/10);
 						notClicked = false;
 						repeat();
 					}
+
 					if(y > 575 && y < 675){
 						size = 200;
 						cell = 1000/(size/10);
 						notClicked = false;
 						repeat();
 					}
+
 					if(y > 750 && y < 850){
 						size = 500;
 						cell = 1000/(size/10);
 						notClicked = false;
 						repeat();
 					}
+
 					if(y > 925 && y < 1025){
 						size = 1000;
 						cell = 1000/(size/10);
@@ -621,6 +741,7 @@ bool notClicked = true;
 					}
 				
 				}
+
 				if(x>=1230 && x<=1690){
 					if(y > 50 && y < 150){
 						notClicked = false;
@@ -628,6 +749,7 @@ bool notClicked = true;
 						return -1;
 					}
 				}
+
 				//BFS 
 				if(y >=325 && y <= 425){
 					if(x>1100 && x<1400){
@@ -654,7 +776,25 @@ bool notClicked = true;
 						for(int i = 0; i < realAdjMat.size(); i++){
 							pathway.push_back(-1);
 						}
-						BFS(0, parent);
+						BFS(0);
+						int endpoint = pathway[realAdjMat.size()-1];
+						while(endpoint != 0){
+							for(int i = 0; i < cell; i++){
+								int a = edges[pathway[endpoint]].second-(cell/2);
+								int b = edges[pathway[endpoint]].first- (cell/2);
+								for(int j = 0; j < cell; j++){
+									if(grid[i+a][j+b] != 1){
+										SDL_SetRenderDrawColor(renderer, 48, 255, 96, 255);		//Set draw color to light green
+										SDL_RenderDrawPoint(renderer, i+a, j+b);
+									}
+								}
+								
+							}
+							endpoint = pathway[endpoint];
+							SDL_RenderPresent(renderer);
+							usleep(5000000/(size));
+						}
+						
 						pathway.clear();
 						int checker = decide();
 						if(checker = -1){
@@ -711,8 +851,7 @@ bool notClicked = true;
 						}
 					}
 				}
-
-
+				
 				if(y >= 800 && y <= 900){
 					if(x>=1100 && x <=1400){
 						for(int i = 0; i< 1001; i++){
@@ -732,33 +871,51 @@ bool notClicked = true;
 								}
 							}
 						}
-						Dijkstra();
 						notClicked = false;
+						visited = vector<bool>(realAdjMat.size(), false);
+						randomPath(0);
+						for(int k = pathway.size()-1; k > 0; k--){
+							for(int i = 0; i < cell; i++){
+								int a = edges[pathway[k]].second-(cell/2);
+								int b = edges[pathway[k]].first- (cell/2);
+								for(int j = 0; j < cell; j++){
+									if(grid[i+a][j+b] != 1){
+										SDL_SetRenderDrawColor(renderer, 48, 255, 96, 255);		//Set draw color to light green
+										SDL_RenderDrawPoint(renderer, i+a, j+b);
+									}
+								}
+							}
+							SDL_RenderPresent(renderer);
+							usleep(5000000/(size));
+						}
+						pathway.clear();
 						int checker = decide();
 						if(checker == -1){
 							notClicked = false;
 							quit = true;
-							return -1;
+							return 0;
 						}
 					}
 				}
-				
 			
 		}
+
 	}
 }
-int Maze::BFS(int start, int parent[]){
+
+int Maze::randomPath(int start){
 	vector<int> q;
+	
+	//srand(time(NULL));
     q.push_back(start);
 	pathway[0] = -1;
     // Set source as visited
     visited[start] = true;
     int vis;
     while (!q.empty()) {
-		
-        vis = q[0];
+		int random = rand() % q.size();
+        vis = q[random];
 		if(vis == realAdjMat.size() -1){
-			printPath(realAdjMat.size()-1, pathway);
 			return 0;
 		}
 		int a = edges[vis].second;
@@ -775,13 +932,66 @@ int Maze::BFS(int start, int parent[]){
 		}
 		SDL_RenderPresent(renderer);
 		usleep(5000000/(10*size));
+
+        q.erase(q.begin()+random);
+  
+        // For every adjacent vertex to the current vertex
+        for (int i = 0; i < realAdjMat[vis].size(); i++) {
+			
+            if (realAdjMat[vis][i] == 1 && (!visited[i])) {
+				if(realAdjMat[vis][i] == realAdjMat.size()){
+					q.clear();
+					return 0;
+				}
+                // Push the adjacent node to the queue
+                q.push_back(i);
+				pathway[i] = vis;
+                // Set
+                visited[i] = true;
+            }
+        }
+    }
+
+}
+
+int Maze::BFS(int start){
+	vector<int> q;
+    q.push_back(start);
+	pathway[0] = -1;
+    // Set source as visited
+    visited[start] = true;
+    int vis;
+    while (!q.empty()) {
+		
+        vis = q[0];
+		if(vis == realAdjMat.size() -1){
+			return 0;
+		}
+		int a = edges[vis].second;
+		int b = edges[vis].first;
+		a = a-(cell/2);
+		b = b-(cell/2);
+		for(int i = 0; i < cell; i++){
+			for(int j = 0; j < cell; j++){
+				if(grid[i+a][j+b] != 1){
+					SDL_SetRenderDrawColor(renderer, 200, 200, 200, 255);		//Set draw color to gray
+					SDL_RenderDrawPoint(renderer, i+a, j+b);
+				}
+			}
+		}
+		SDL_RenderPresent(renderer);
+		usleep(5000000/(10*size));
+
         q.erase(q.begin());
   
         // For every adjacent vertex to the current vertex
         for (int i = 0; i < realAdjMat[vis].size(); i++) {
 			
             if (realAdjMat[vis][i] == 1 && (!visited[i])) {
-				
+				if(realAdjMat[vis][i] == realAdjMat.size()){
+					q.clear();
+					return 0;
+				}
                 // Push the adjacent node to the queue
                 q.push_back(i);
 				pathway[i] = vis;
@@ -791,8 +1001,13 @@ int Maze::BFS(int start, int parent[]){
         }
     }
 }
+
+
+
 int Maze::DFS(int start){
+
 	int check = 0;
+
 	int a = edges[start].second;
 	int b = edges[start].first;
 	a = a-(cell/2);
@@ -813,6 +1028,7 @@ int Maze::DFS(int start){
 	}
 	SDL_RenderPresent(renderer);
 	usleep(5000000/(10*size));
+
   // Set current node as visited
   visited[start] = true;
  
@@ -831,91 +1047,3 @@ int Maze::DFS(int start){
   }
 }
 
-
-
-void Maze::printPath(int currentVertex, vector<int> parents)
-{
- 
-    // Base case : Source node has
-    // been processed
-    if (currentVertex == -1) {
-        return;
-    }
-    printPath(parents[currentVertex], parents);
-    if(currentVertex != realAdjMat.size()-1){
-		int a = edges[currentVertex].second-(cell/2);
-		int b = edges[currentVertex].first- (cell/2);
-		for(int i = 0; i < cell; i++){
-			for(int j = 0; j < cell; j++){
-				if(grid[i+a][j+b] != 1){
-					SDL_SetRenderDrawColor(renderer, 48, 255, 96, 255);		//Set draw color to light green
-					SDL_RenderDrawPoint(renderer, i+a, j+b);
-				}
-			}
-    	}
-	    
-    }
-	SDL_RenderPresent(renderer);
-	usleep(5000000/(size));
-}
-
-
-int Maze::Dijkstra(){
-	int n = realAdjMat.size();
-	vector<int> p(n, -1);
-	vector<bool> v(n, false);
-	vector<int> d(n, INT_MAX);
-	queue<int> q;
-	q.push(0);
-	d[0] =0;
-	int vis;
-    while (!q.empty()) {
-        int vis = q.front();
-		q.pop();
-		int a = edges[vis].second;
-        int b = edges[vis].first;
-        a = a-(cell/2);
-        b = b-(cell/2);
-        for(int i = 0; i < cell; i++){
-            for(int j = 0; j < cell; j++){
-                if(grid[i+a][j+b] != 1){
-                    SDL_SetRenderDrawColor(renderer, 200, 200, 200, 255);        //Set draw color to gray
-                    SDL_RenderDrawPoint(renderer, i+a, j+b);
-                }
-            }
-        }
-        SDL_RenderPresent(renderer);
-        usleep(5000000/(10*size));
-
-		int nearest = -1;
-        int shortestdistance = INT_MAX;
-
-        for(int i = 0; i < realAdjMat.size();i++){
-            if(!v[i] && d[i] < shortestdistance){
-                nearest = i;
-                shortestdistance = d[i];
-            }
-        }
-
-        for (int j = 0; j < realAdjMat[vis].size(); j++) {
-            int totaldistance = realAdjMat[vis][j]+shortestdistance;
-            if (realAdjMat[vis][j] == 1 && totaldistance <d[j]) {
-                p[j] = vis;
-                d[j] = totaldistance;
-                v[j] = true;
-				if(j == n-1){
-					printPath(n-1, p);
-					return 0;
-				}
-
-
-
-				q.push(j);
-            }
-        }
-    }
-
-
-}
-
- 
