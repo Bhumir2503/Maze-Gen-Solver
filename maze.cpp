@@ -5,6 +5,7 @@
 #include <unistd.h>
 #include <random>
 #include <string>
+#include <queue>
 #include <bits/stdc++.h>
 //#include <dos.h>
 using namespace std;
@@ -521,23 +522,6 @@ int Maze::gen_maze(vector<int> mazeLayout,int vert){
 							pathway.push_back(-1);
 						}
 						BFS(0, parent);
-						int endpoint = pathway[realAdjMat.size()-1];
-						while(endpoint != 0){
-							for(int i = 0; i < cell; i++){
-								int a = edges[pathway[endpoint]].second-(cell/2);
-								int b = edges[pathway[endpoint]].first- (cell/2);
-								for(int j = 0; j < cell; j++){
-									if(grid[i+a][j+b] != 1){
-										SDL_SetRenderDrawColor(renderer, 48, 255, 96, 255);		//Set draw color to light green
-										SDL_RenderDrawPoint(renderer, i+a, j+b);
-									}
-								}
-								
-							}
-							endpoint = pathway[endpoint];
-							SDL_RenderPresent(renderer);
-							usleep(5000000/(size));
-						}
 						
 						pathway.clear();
 						int checker = decide();
@@ -554,7 +538,7 @@ int Maze::gen_maze(vector<int> mazeLayout,int vert){
 					if(x>=1100 && x <=1400){
 						notClicked = false;
 						visited = vector<bool>(realAdjMat.size(), false);
-						/*DFS(0);
+						DFS(0);
 						for(int k = pathway.size()-1; k > 0; k--){
 							for(int i = 0; i < cell; i++){
 								int a = edges[pathway[k]].second-(cell/2);
@@ -575,11 +559,23 @@ int Maze::gen_maze(vector<int> mazeLayout,int vert){
 							notClicked = false;
 							quit = true;
 							return 0;
-						}*/
-						Dijkstra(realAdjMat, 0);
+						}
+						
 					}
 				}
-				
+
+				if(y >= 800 && y <= 900){
+					if(x>=1100 && x <=1400){
+						Dijkstra();
+						notClicked = false;
+						int checker = decide();
+						if(checker == -1){
+							notClicked = false;
+							quit = true;
+							return 0;
+						}
+					}
+				}
 			
 		}
 	}
@@ -659,24 +655,6 @@ bool notClicked = true;
 							pathway.push_back(-1);
 						}
 						BFS(0, parent);
-						int endpoint = pathway[realAdjMat.size()-1];
-						while(endpoint != 0){
-							for(int i = 0; i < cell; i++){
-								int a = edges[pathway[endpoint]].second-(cell/2);
-								int b = edges[pathway[endpoint]].first- (cell/2);
-								for(int j = 0; j < cell; j++){
-									if(grid[i+a][j+b] != 1){
-										SDL_SetRenderDrawColor(renderer, 48, 255, 96, 255);		//Set draw color to light green
-										SDL_RenderDrawPoint(renderer, i+a, j+b);
-									}
-								}
-								
-							}
-							endpoint = pathway[endpoint];
-							SDL_RenderPresent(renderer);
-							usleep(5000000/(size));
-						}
-						
 						pathway.clear();
 						int checker = decide();
 						if(checker = -1){
@@ -733,6 +711,37 @@ bool notClicked = true;
 						}
 					}
 				}
+
+
+				if(y >= 800 && y <= 900){
+					if(x>=1100 && x <=1400){
+						for(int i = 0; i< 1001; i++){
+							for(int j = 0; j < 1001; j++){
+								if(grid[i][j] != 1){
+										SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);		//Set draw color to black
+										SDL_RenderDrawPoint(renderer, i, j);
+										if(i>0 && i < cell && j> 0 && j < cell){
+											SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);		//Set draw color to green
+											SDL_RenderDrawPoint(renderer, i, j);
+										}
+										if(i>1001-cell && i < 1001 && j> 1001-cell && j < 1001){
+											SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);		//Set draw color to red
+											SDL_RenderDrawPoint(renderer, i, j);
+										}
+										
+								}
+							}
+						}
+						Dijkstra();
+						notClicked = false;
+						int checker = decide();
+						if(checker == -1){
+							notClicked = false;
+							quit = true;
+							return -1;
+						}
+					}
+				}
 				
 			
 		}
@@ -749,6 +758,7 @@ int Maze::BFS(int start, int parent[]){
 		
         vis = q[0];
 		if(vis == realAdjMat.size() -1){
+			printPath(realAdjMat.size()-1, pathway);
 			return 0;
 		}
 		int a = edges[vis].second;
@@ -771,10 +781,7 @@ int Maze::BFS(int start, int parent[]){
         for (int i = 0; i < realAdjMat[vis].size(); i++) {
 			
             if (realAdjMat[vis][i] == 1 && (!visited[i])) {
-				if(realAdjMat[vis][i] == realAdjMat.size()){
-					q.clear();
-					return 0;
-				}
+				
                 // Push the adjacent node to the queue
                 q.push_back(i);
 				pathway[i] = vis;
@@ -826,9 +833,7 @@ int Maze::DFS(int start){
 
 
 
-
-
-void printPath(int currentVertex, vector<int> parents)
+void Maze::printPath(int currentVertex, vector<int> parents)
 {
  
     // Base case : Source node has
@@ -837,106 +842,80 @@ void printPath(int currentVertex, vector<int> parents)
         return;
     }
     printPath(parents[currentVertex], parents);
-    cout << currentVertex << " ";
-    if(currentVertex != 0 || currentVertex != realAdjMat.size()-1);
-    int a = edges[currentVertex].second-(cell/2);
-    int b = edges[currentVertex].first- (cell/2);
-    for(int i = 0; i < cell; i++){
-    for(int j = 0; j < cell; j++){
-	if(grid[i+a][j+b] != 1){
-		SDL_SetRenderDrawColor(renderer, 48, 255, 96, 255);		//Set draw color to light green
-		SDL_RenderDrawPoint(renderer, i+a, j+b);
-	}
-    }
+    if(currentVertex != realAdjMat.size()-1){
+		int a = edges[currentVertex].second-(cell/2);
+		int b = edges[currentVertex].first- (cell/2);
+		for(int i = 0; i < cell; i++){
+			for(int j = 0; j < cell; j++){
+				if(grid[i+a][j+b] != 1){
+					SDL_SetRenderDrawColor(renderer, 48, 255, 96, 255);		//Set draw color to light green
+					SDL_RenderDrawPoint(renderer, i+a, j+b);
+				}
+			}
+    	}
 	    
     }
 	SDL_RenderPresent(renderer);
 	usleep(5000000/(size));
 }
 
-int Maze::Dijkstra(vector<vector<int> > adjacencyMatrix,int startVertex){
-    int nVertices = adjacencyMatrix[0].size();
- 
-    // shortestDistances[i] will hold the
-    // shortest distance from src to i
-    vector<int> shortestDistances(nVertices);
- 
-    // added[i] will true if vertex i is
-    // included / in shortest path tree
-    // or shortest distance from src to
-    // i is finalized
-    vector<bool> added(nVertices);
- 
-    // Initialize all distances as
-    // INFINITE and added[] as false
-    for (int vertexIndex = 0; vertexIndex < nVertices;
-         vertexIndex++) {
-        shortestDistances[vertexIndex] = INT_MAX;
-        added[vertexIndex] = false;
-    }
- 
-    // Distance of source vertex from
-    // itself is always 0
-    shortestDistances[startVertex] = 0;
- 
-    // Parent array to store shortest
-    // path tree
-    vector<int> parents(nVertices);
- 
-    // The starting vertex does not
-    // have a parent
-    parents[startVertex] = -1;
- 
-    // Find shortest path for all
-    // vertices
-    for (int i = 1; i < nVertices; i++) {
- 
-        // Pick the minimum distance vertex
-        // from the set of vertices not yet
-        // processed. nearestVertex is
-        // always equal to startNode in
-        // first iteration.
-        int nearestVertex = -1;
-        int shortestDistance = INT_MAX;
-        for (int vertexIndex = 0; vertexIndex < nVertices;
-             vertexIndex++) {
-            if (!added[vertexIndex]
-                && shortestDistances[vertexIndex]
-                       < shortestDistance) {
-                nearestVertex = vertexIndex;
-                shortestDistance
-                    = shortestDistances[vertexIndex];
+
+int Maze::Dijkstra(){
+	int n = realAdjMat.size();
+	vector<int> p(n, -1);
+	vector<bool> v(n, false);
+	vector<int> d(n, INT_MAX);
+	queue<int> q;
+	q.push(0);
+	d[0] =0;
+	int vis;
+    while (!q.empty()) {
+        int vis = q.front();
+		q.pop();
+		int a = edges[vis].second;
+        int b = edges[vis].first;
+        a = a-(cell/2);
+        b = b-(cell/2);
+        for(int i = 0; i < cell; i++){
+            for(int j = 0; j < cell; j++){
+                if(grid[i+a][j+b] != 1){
+                    SDL_SetRenderDrawColor(renderer, 200, 200, 200, 255);        //Set draw color to gray
+                    SDL_RenderDrawPoint(renderer, i+a, j+b);
+                }
             }
         }
- 
-        // Mark the picked vertex as
-        // processed
-        added[nearestVertex] = true;
- 
-        // Update dist value of the
-        // adjacent vertices of the
-        // picked vertex.
-        for (int vertexIndex = 0; vertexIndex < nVertices;
-             vertexIndex++) {
-            int edgeDistance
-                = adjacencyMatrix[nearestVertex]
-                                 [vertexIndex];
- 
-            if (edgeDistance > 0
-                && ((shortestDistance + edgeDistance)
-                    < shortestDistances[vertexIndex])) {
-		    
-		    //color goes here;
-                parents[vertexIndex] = nearestVertex;
-                shortestDistances[vertexIndex]
-                    = shortestDistance + edgeDistance;
+        SDL_RenderPresent(renderer);
+        usleep(5000000/(10*size));
+
+		int nearest = -1;
+        int shortestdistance = INT_MAX;
+
+        for(int i = 0; i < realAdjMat.size();i++){
+            if(!v[i] && d[i] < shortestdistance){
+                nearest = i;
+                shortestdistance = d[i];
+            }
+        }
+
+        for (int j = 0; j < realAdjMat[vis].size(); j++) {
+            int totaldistance = realAdjMat[vis][j]+shortestdistance;
+            if (realAdjMat[vis][j] == 1 && totaldistance <d[j]) {
+                p[j] = vis;
+                d[j] = totaldistance;
+                v[j] = true;
+				if(j == n-1){
+					printPath(n-1, p);
+					return 0;
+				}
+
+
+
+				q.push(j);
             }
         }
     }
- 
-    printPath(realAdjMat.size()-1, parents);
+
 
 }
-
 
  
