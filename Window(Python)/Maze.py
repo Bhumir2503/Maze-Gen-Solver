@@ -230,6 +230,9 @@ class maze:
         di = font2.render('DIJKSTRA', True, self.color)
         pygame.draw.rect(self.screen, (0,0,255), [1100, 575, 300,100])
         self.screen.blit(di, (1105,590))
+        ran = font2.render('RANDOM', True, self.color)
+        pygame.draw.rect(self.screen, (0,0,255), [1100, 750, 300,100])
+        self.screen.blit(ran, (1110, 770))
         pygame.display.update()
 
         for i in range(0, vert):
@@ -304,7 +307,13 @@ class maze:
                             self.Dijkstra()
                             self.pathway.clear()
                             self.decide()
-                            
+                        
+                        if(750 <= mouse[1]<= 850):
+                            notclicked = False
+                            self.pathway = [-1]*vert
+                            self.randompath()
+                            self.pathway.clear()
+                            self.decide()
     def decide(self):
         notclicked = True
         while notclicked:
@@ -348,8 +357,6 @@ class maze:
                             self.pathway.clear()
                             self.decide()
                             
-                            
-                            x=5
                         if(400 <= mouse[1] <= 500):
                             notclicked = False
                             self.maze_reset()
@@ -375,6 +382,14 @@ class maze:
                             notclicked = False
                             self.maze_reset()
                             self.Dijkstra()
+                            self.pathway.clear()
+                            self.decide()
+                            
+                        if(750 <= mouse[1]<= 850):
+                            notclicked = False
+                            self.maze_reset()
+                            self.pathway = [-1]*len(self.adjMat)
+                            self.randompath()
                             self.pathway.clear()
                             self.decide()
     def repeat(self):
@@ -510,7 +525,41 @@ class maze:
                         self.printPath(n-1)
                         return 0
                     q.append(i)
+    
+    def randompath(self):
+        q = []
+        q.append(0)
+        v = [False]*len(self.adjMat)
+        v[0] = True
+        
+        self.pathway[0] = -1
+        while(len(q) != 0 ):
+            rand = random.randint(0, len(q)-1)
+            u = q.pop(rand)
+            if(u == len(self.adjMat)-1):
+                self.printPath(len(self.adjMat)-1)
+                return
+            a = self.edges[u][1]
+            b = self.edges[u][0]
+            a = a-(self.cell/2)
+            b = b-(self.cell/2)
             
+            for i in range(0, int(self.cell)):
+                for j in range(0, int(self.cell)):
+                    if((self.grid[int(a+i)][int(b+j)]) != 1):
+                        self.screen.set_at((int(a+i), int(b+j)), (100,100,100))
+            pygame.display.update()
+            time.sleep(5/10000000000)
+            
+            
+            
+            for i in range(0,len(self.adjMat)):
+                if(self.adjMat[u][i] == 1 and v[i] == False):
+                    q.append(i)
+                    self.pathway[i] = u
+                    v[i] = True
+        
+    
 m = maze()
     
 
