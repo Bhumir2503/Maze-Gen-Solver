@@ -20,6 +20,7 @@ class Maze {
 		int BFS(int, int[]);
 		int DFS(int);
 		int Dijkstra();
+		int randomPath(int);
 		void printPath(int currentVertex, vector<int> parents);
 		int decide();
 		void reset();
