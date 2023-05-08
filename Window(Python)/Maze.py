@@ -28,7 +28,7 @@ class maze:
         qui = self.font.render('QUIT' , True , self.color)
         five = self.font.render('5' , True , self.color)
         ten = self.font.render('10' , True , self.color)
-        twenty = self.font.render('20' , True , self.color)
+        twenty = self.font.render('25' , True , self.color)
         fifty = self.font.render('50' , True , self.color)
 
         
@@ -71,7 +71,7 @@ class maze:
                             self.cell = 1000/(self.size/10)
                             notclicked = False
                         if 575 <= mouse[1] <= 675:
-                            self.size = 200
+                            self.size = 250
                             self.cell = 1000/(self.size/10)
                             notclicked = False
                         if 750 <= mouse[1] <= 850:
@@ -407,6 +407,10 @@ class maze:
             for j in range(0,1001):
                 if(self.grid[i][j] !=1 ):
                     self.screen.set_at((int(i), int(j)), (0,0,0))
+                if(i < self.cell and j < self.cell and self.grid[i][j] != 1):
+                    self.screen.set_at((i, j), (0,255,0))
+                if(i > 1000-self.cell and j > 1000-self.cell and self.grid[i][j] !=1 and i < 1000 and j < 1000):
+                    self.screen.set_at((i, j), (255,0,0))
         pygame.display.update()
     def blackWindow(self):
         for i in range(0,1050):
@@ -561,17 +565,3 @@ class maze:
         
     
 m = maze()
-    
-
-
-
-
-
-                  
-    
-      
-
-    
-      
-
-    
