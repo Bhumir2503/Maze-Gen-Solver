@@ -233,6 +233,9 @@ class maze:
         ran = font2.render('RANDOM', True, self.color)
         pygame.draw.rect(self.screen, (0,0,255), [1100, 750, 300,100])
         self.screen.blit(ran, (1110, 770))
+        man = font2.render('MANUAL', True, self.color)
+        pygame.draw.rect(self.screen, (0,0,255), [1100, 925, 300,100])
+        self.screen.blit(man, (1110, 950))
         pygame.display.update()
 
         for i in range(0, vert):
@@ -314,6 +317,13 @@ class maze:
                             self.randompath()
                             self.pathway.clear()
                             self.decide()
+                        
+                        if(925 <= mouse[1]<= 1025):
+                            notclicked = False
+                            self.pathway = [-1]*vert
+                            self.manual()
+                            self.pathway.clear()
+                            self.decide()
     def decide(self):
         notclicked = True
         while notclicked:
@@ -390,6 +400,14 @@ class maze:
                             self.maze_reset()
                             self.pathway = [-1]*len(self.adjMat)
                             self.randompath()
+                            self.pathway.clear()
+                            self.decide()
+                        
+                        if(925 <= mouse[1]<= 1025):
+                            notclicked = False
+                            self.maze_reset()
+                            self.pathway = [-1]*len(self.adjMat)
+                            self.manual()
                             self.pathway.clear()
                             self.decide()
     def repeat(self):
@@ -562,6 +580,111 @@ class maze:
                     q.append(i)
                     self.pathway[i] = u
                     v[i] = True
+    
+    def manual(self):
+        q = []
+        q.append(0)
+        v = [False]*len(self.adjMat)
+        v[0] = True
+
+        current = 0
+        old = 0
+        notClicked = True
+        while(notClicked):
+            mouse = pygame.mouse.get_pos()
+            for ev in pygame.event.get():
+                if ev.type == pygame.MOUSEBUTTONDOWN:
+                    notClicked = False
+                    if 1230 <= mouse[0] <= 1670 and 50 <= mouse[1] <= 150:
+                        pygame.quit()
+
+                if ev.type == pygame.KEYDOWN: 
+                    validKey = False
+                    old = current
+                    if ev.key == pygame.K_d or ev.key == pygame.K_6 or ev.key == pygame.K_RIGHT: # Right
+                        for i in range(0, len(self.adjMat)): 
+                            # I despise the fact this is so inefficient. 
+                            # Simply looks for an adjacent cell & checks if it's to the right of the cell
+                            if(self.adjMat[current][i] == 1 and i == current + 1):
+                                current += 1
+                                break
+                        validKey = True
+                    elif ev.key == pygame.K_a or ev.key == pygame.K_4 or ev.key == pygame.K_LEFT: # Left
+                        for i in range(0, len(self.adjMat)):
+                            if(self.adjMat[current][i] == 1 and i == current - 1):
+                                current -= 1
+                                break
+                        validKey = True
+                    elif ev.key == pygame.K_w or ev.key == pygame.K_8 or ev.key == pygame.K_UP: # Up
+                        for i in range(0, len(self.adjMat)):
+                            if(self.adjMat[current][i] == 1 and i != current - 1 and i < current):
+                                current = i
+                                break
+                        validKey = True
+                    elif ev.key == pygame.K_s or ev.key == pygame.K_2 or ev.key == pygame.K_DOWN: # Down
+                        for i in range(0, len(self.adjMat)):
+                            if(self.adjMat[current][i] == 1 and i != current + 1 and i > current):
+                                current = i
+                                break
+                        validKey = True
+                    
+                    if validKey:
+                        # Color old cell Gray IF new cell is part of the path
+                        if(v[current]==True):
+                            v[old] = False # Set old cell to be no longer part of the path (You're going backwards)
+                            a = self.edges[old][1]
+                            b = self.edges[old][0]
+                            a = a-(self.cell/2)
+                            b = b-(self.cell/2)
+                            for i in range(0, int(self.cell)):
+                                for j in range(0, int(self.cell)):
+                                    if((self.grid[int(a+i)][int(b+j)]) != 1):
+                                        self.screen.set_at((int(a+i), int(b+j)), (100,100,100))
+
+                        v[current] = True # New visited cell
+
+                        # Color new cell Green
+                        a = self.edges[current][1]
+                        b = self.edges[current][0]
+                        a = a-(self.cell/2)
+                        b = b-(self.cell/2)
+                        for i in range(0, int(self.cell)):
+                            for j in range(0, int(self.cell)):
+                                if((self.grid[int(a+i)][int(b+j)]) != 1):
+                                    self.screen.set_at((int(a+i), int(b+j)), (48,255,96))
+                        pygame.display.update()
+
+                        # Check for "victory condition"
+                        if current == len(self.adjMat)-1:
+                            return
+                    
+
         
+        # self.pathway[0] = -1
+        # while(len(q) != 0 ):
+        #     rand = random.randint(0, len(q)-1)
+        #     u = q.pop(rand)
+        #     if(u == len(self.adjMat)-1):
+        #         self.printPath(len(self.adjMat)-1)
+        #         return
+        #     a = self.edges[u][1]
+        #     b = self.edges[u][0]
+        #     a = a-(self.cell/2)
+        #     b = b-(self.cell/2)
+            
+        #     for i in range(0, int(self.cell)):
+        #         for j in range(0, int(self.cell)):
+        #             if((self.grid[int(a+i)][int(b+j)]) != 1):
+        #                 self.screen.set_at((int(a+i), int(b+j)), (100,100,100))
+        #     pygame.display.update()
+        #     time.sleep(5/10000000000)
+            
+            
+            
+        #     for i in range(0,len(self.adjMat)):
+        #         if(self.adjMat[u][i] == 1 and v[i] == False):
+        #             q.append(i)
+        #             self.pathway[i] = u
+        #             v[i] = True
     
 m = maze()
