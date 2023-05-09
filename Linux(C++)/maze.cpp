@@ -82,7 +82,7 @@ void Maze::text(string textureText){
 		rectangle.y = 425;
 		rectangle.w = 150;
 		rectangle.h = 50;
-	}else if(textureText == "20 x 20"){
+	}else if(textureText == "25 x 25"){
 		rectangle.x = 1625;
 		rectangle.y = 600;
 		rectangle.w = 150;
@@ -141,7 +141,7 @@ void:: Maze::blackWindow(){
 int Maze::Sizebutton_builder(){
 	string five = "5 x 5"; // y = 1100 | x = 150
 	string ten = "10 x 10";
-	string twenty = "20 x 20";
+	string twenty = "25 x 25";
 	string fifty = "50 x 50";
 	string hundred = "100 x 100";
 	string quit = "Quit";
@@ -204,7 +204,7 @@ int Maze::Sizebutton_builder(){
 						notClicked = false;
 					}
 					if(y > 575 && y < 675){
-						size = 200;
+						size = 250;
 						cell = 1000/(size/10);
 						notClicked = false;
 					}
@@ -226,6 +226,9 @@ int Maze::Sizebutton_builder(){
 		}
 	}
 }
+
+
+//builds a grid 
 void Maze::build_grid() {
 	//makes the walls
 	for(int i =0; i <= 1000; i++){
@@ -277,6 +280,8 @@ void Maze::build_grid() {
 	}
 	SDL_RenderPresent(renderer);		//Show updated render
 }
+
+//builds the realAdjMat
 void Maze::adjMat_Builder(){
 	int maxSize = adjMat.size()*adjMat.size();
 	
@@ -485,7 +490,7 @@ int Maze::gen_maze(vector<int> mazeLayout,int vert){
 						repeat();
 					}
 					if(y > 575 && y < 675){
-						size = 200;
+						size = 250;
 						cell = 1000/(size/10);
 						notClicked = false;
 						repeat();
@@ -557,6 +562,7 @@ int Maze::gen_maze(vector<int> mazeLayout,int vert){
 					}
 				}
 
+				//Dijkstra
 				if(y >= 575 && y <= 675){
 					if(x>=1100 && x <=1400){
 						Dijkstra();
@@ -570,6 +576,7 @@ int Maze::gen_maze(vector<int> mazeLayout,int vert){
 					}
 				}
 
+				//random
 				if(y >= 750 && y <= 850){
 					if(x>=1100 && x <=1400){
 						notClicked = false;
@@ -593,6 +600,8 @@ int Maze::gen_maze(vector<int> mazeLayout,int vert){
 	}
 	
 }
+
+//waits for the next button choice
 int Maze::decide(){
 bool notClicked = true;
 	while(notClicked){
@@ -614,7 +623,7 @@ bool notClicked = true;
 						repeat();
 					}
 					if(y > 575 && y < 675){
-						size = 200;
+						size = 250;
 						cell = 1000/(size/10);
 						notClicked = false;
 						repeat();
