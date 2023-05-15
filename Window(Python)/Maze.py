@@ -3,7 +3,7 @@ import random
 
 import time
 import sys
-
+#class definition
 class maze:
     def __init__(self):
         self.cell = 0
@@ -23,7 +23,7 @@ class maze:
         self.sizeButton_builder()
 
   
-
+#makes the buttons for maze size and quit button
     def sizeButton_builder(self):
         qui = self.font.render('QUIT' , True , self.color)
         five = self.font.render('5' , True , self.color)
@@ -50,7 +50,7 @@ class maze:
         self.screen.blit(twenty, (1670, 590))
         self.screen.blit(fifty, (1670, 770))
 
-
+#updates the display, polls the mouse buttons waiting for inputs on a button
         pygame.display.update()
         notclicked = True
         while notclicked:
@@ -80,7 +80,7 @@ class maze:
                             notclicked = False
         self.build_grid()
         
-    
+    #builds the grid as well as the adjacency matrix
     def build_grid(self):
         for i in range(0,1001):
             tmp = []
@@ -157,7 +157,7 @@ class maze:
             self.adjlist.append(tmp2)
         
         self.rand_prims()
-        
+       #random prims function to make the maze 
     def rand_prims(self):
         vert = len(self.adjMat)
         newGraph = [0]*vert
@@ -182,7 +182,7 @@ class maze:
                     key[self.adjlist[index][j]] = self.adjMat[index][self.adjlist[index][j]]
             
         self.gen_maze(newGraph)
-    
+    #makes the maze 
     def gen_maze(self, mazelayout = [], ):
         vert = len(self.adjMat)
         for i in range(1, vert):
@@ -219,7 +219,7 @@ class maze:
         pygame.display.update()
         
 
-
+#adds the maze sovler algorithm buttons after making the maze
         bfs = self.font.render('BFS', True, self.color)
         pygame.draw.rect(self.screen, (0,0,255), [1100, 225, 300,100])
         self.screen.blit(bfs, (1180,240))
@@ -245,7 +245,7 @@ class maze:
                 else:
                     self.adjMat[i][j] =1
         
-        
+        #polls the mouse for button clicked
         notclicked = True
         while notclicked:
             mouse = pygame.mouse.get_pos()
@@ -410,6 +410,7 @@ class maze:
                             self.manual()
                             self.pathway.clear()
                             self.decide()
+#clears all maze data to build new maze
     def repeat(self):
         self.grid.clear()
         self.edges.clear()
@@ -435,7 +436,7 @@ class maze:
             for j in range(0,1080):
                 self.screen.set_at((int(i), int(j)), (0,0,0))
         pygame.display.update()
-            
+      #bfs maze solver function      
     def BFS(self):
         q = []
         visited = [False]*len(self.adjMat)
@@ -467,7 +468,7 @@ class maze:
                     self.pathway[i] = u
                     visited[i] = True
         
-    
+    #prints the path
     def printPath(self, current):
         if(current == -1):
             return
@@ -484,7 +485,7 @@ class maze:
         pygame.display.update()
         time.sleep(5/10000000000)
         return
-    
+    #dfs function for maze solver
     def DFS(self, start, visited = []):
         check = 0
         if(start == len(self.adjMat)-1):
@@ -508,7 +509,7 @@ class maze:
                 if(check == -1):
                     self.pathway.append(i)
                     return -1
-    
+    #djikstras maze solver algorithm
     def Dijkstra(self):
         n = len(self.adjMat)
         self.pathway = [-1]*n
@@ -547,7 +548,7 @@ class maze:
                         self.printPath(n-1)
                         return 0
                     q.append(i)
-    
+    #random path solver
     def randompath(self):
         q = []
         q.append(0)
@@ -580,7 +581,7 @@ class maze:
                     q.append(i)
                     self.pathway[i] = u
                     v[i] = True
-    
+    #manual solver
     def manual(self):
         q = []
         q.append(0)
@@ -686,5 +687,5 @@ class maze:
         #             q.append(i)
         #             self.pathway[i] = u
         #             v[i] = True
-    
+   #makes object 
 m = maze()
